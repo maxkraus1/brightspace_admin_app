@@ -8,15 +8,8 @@ import csv
 import os
 import sys
 
-import dwnld
-
-# import datahub module from the DataHub directory,
-# which should be next to APiscripts directory
-dh_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "DataHub")
-sys.path.insert(1, dh_path)
 import datahub
-
-
+import dwnld
 
 report_path="G:/Shared drives/~ LMS Brightspace Implementation/Data Hub/Reports"
 

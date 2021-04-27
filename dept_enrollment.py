@@ -9,9 +9,7 @@ import os
 import sys
 
 import datahub
-
-sys.path.insert(1, os.path.dirname(os.path.dirname(__file__)))
-from api import dwnld
+import dwnld
 
 sem_code = str(sys.argv[1])
 dept_code = str(sys.argv[2])
