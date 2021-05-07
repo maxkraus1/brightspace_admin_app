@@ -14,7 +14,7 @@ import sys
 import zipfile
 import report
 
-dir = os.path.dirname(__file__)  # directory for APIscripts
+dir = os.path.dirname(__file__)  # directory for scritps
 # Logging setup to print to terminal and dwnld_debug.log
 logging.basicConfig(
     level=logging.INFO,
@@ -28,8 +28,8 @@ logging.basicConfig(
 # Authorization:
 # Postman Collection Refresh Token >
 # POST Request a New Access Token and Refresh Token
-# Send and Download to APIscripts directory
-token_data = json.load(open(os.path.join(dir, "response.json")))
+# Send and Download to the script's directory
+token_data = json.load(open(os.path.join(dir, "credentials.json")))
 HEADERS={'Authorization': 'Bearer {}'.format(token_data['access_token'])}
 
 # Other Global Variables below
