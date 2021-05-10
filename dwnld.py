@@ -34,7 +34,7 @@ HEADERS={'Authorization': 'Bearer {}'.format(token_data['access_token'])}
 
 # Other Global Variables below
 DOMAIN = 'https://lms.otis.edu/d2l/api'
-LP_VERSION = '1.28'
+LP_VERSION = '1.30'
 LE_VERSION = '1.47'
 
 def code_log(response, funct_name):
@@ -144,14 +144,30 @@ def get_datasets_list():
     code_log(response, "GET data sets list")
     return json.loads(response.text)
 
-def get_dataset_csv(pluginId, path):
+def get_all_bds():
+    """Retrieves the paginated list of all available BDS exports and returns a
+    list of dicts"""
+    url = DOMAIN + "/lp/{}/dataExport/bds".format(LP_VERSION)
+    exports = []
+    page = 1
+    while url != None:
+        response = requests.get(url, headers=HEADERS)
+        code_log(response, "GET all BDS exports page {}".format(page))
+        data = json.loads(response.text)
+        exports.extend(data["BrightspaceDataSets"])
+        url = data["NextPageUrl"]
+        page += 1
+    return exports
+
+def get_dataset_csv(url, path):
     """Downloads the data set csv file to the path"""
-    url = DOMAIN + \
-    "/lp/{}/dataExport/bds/download/{}".format(LP_VERSION, pluginId)
     response = requests.get(url, headers=HEADERS, stream=True)
     code_log(response, "GET data set csv")
     with zipfile.ZipFile(io.BytesIO(response.content), 'r') as zip_ref:
+        contents = zip_ref.namelist()
+        assert len(contents) == 1
         zip_ref.extractall(path)
+        return os.path.join(path, contents[0])
 
 def get_toc(orgUnitId):
     """Retrieves the Table of Contents for the course and
@@ -197,6 +213,19 @@ def get_classlist(orgUnitId):
     response = requests.get(url, headers=HEADERS)
     code_log(response, "GET class list for org unit {}".format(orgUnitId))
     return json.loads(response.text)
+
+def get_course_info(orgUnitId):
+    """Returns basic info for a course offering"""
+    url = DOMAIN + "/lp/{}/courses/{}".format(LP_VERSION, orgUnitId)
+    response = requests.get(url, headers=HEADERS)
+    code_log(response, "GET course offering info org unit".format(orgUnitId))
+    return json.loads(response.text)
+
+def put_course_info(orgUnitId, json_data):
+    """Updates the course info for a particular org unit"""
+    url = DOMAIN + "/lp/{}/courses/{}".format(LP_VERSION, orgUnitId)
+    response = requests.put(url, headers=HEADERS, json=json_data)
+    code_log(response, "PUT course offering info org unit {}".format(orgUnitId))
 
 # complex functions below here
 def get_files(orgUnitId, keyphrase, path):

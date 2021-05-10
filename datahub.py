@@ -2,6 +2,7 @@
 
 import csv
 import os
+import re
 
 DATA_PATH = \
 "G:/Shared drives/~ LMS Brightspace Implementation/Data Hub/Data Sets/"
@@ -78,9 +79,43 @@ def get_role(roleId):
             if role["RoleId"] == str(roleId):
                 return role["RoleName"]
 
+def get_semester_courses(semestercode):
+    """takes the Otis semester code and returns a list of dicts for each
+    course offering in the semester
+    """
+    sem = get_orgunit(semestercode)
+    ou_list = []
+    with open(DESCENDANTS, newline="", encoding="utf-8-sig") as infile:
+        reader = csv.DictReader(infile)
+        for row in reader:
+            if row["OrgUnitId"] == sem:
+                ou_list.append(row["DescendantOrgUnitId"])
+    course_list = []
+    with open(ORG_UNITS, newline="", encoding="utf-8-sig") as infile:
+        reader = csv.DictReader(infile)
+        for row in reader:
+            if row["OrgUnitId"] in ou_list and row["Type"] == "Course Offering":
+                course_list.append(row)
+    return course_list
+
+def cross_listed(semestercode):
+    """Takes the Otis semester code and produces a csv report on all
+    cross-listed courses in the semester
+    """
+    all_courses = get_semester_courses(semestercode)
+    pattern = r"[A-Z]{2}" + str(semestercode)
+    cross_listed = [c for c in all_courses if re.match(pattern, c["Code"])]
+    filename = os.path.join(REPORT_PATH,
+        "Semester Course Reports/{}_CrossListed.csv".format(semestercode))
+    with open(filename, "w", newline="") as outfile:
+        fieldnames = all_courses[0].keys()
+        writer = csv.DictWriter(outfile, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(cross_listed)
+
 def dept_sheet(descendants):
     """Takes the results of get_descendants() and generates a list obejct
-    with info of all descendants for a department
+    with info of all course offerings for a department
     """
     with open(ORG_UNITS, newline="", encoding="utf-8-sig") as infile:
         reader = csv.DictReader(infile, delimiter=',')
@@ -88,7 +123,8 @@ def dept_sheet(descendants):
         sheet = []
         for row in reader:
             if row['OrgUnitId'] in descendants:
-                sheet.append(row)
+                if row['Type'] == "Course Offering":
+                    sheet.append(row)
         return [sheet, columns]
 
 def signature_assignments(sem):
