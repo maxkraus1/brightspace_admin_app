@@ -11,8 +11,9 @@ import sys
 import datahub
 import dwnld
 
-with open(sys.argv[1], newline="", encoding="utf-8-sig") as csvfile:
-    reader = csv.DictReader(csvfile)
+def main():
+    with open(sys.argv[1], newline="", encoding="utf-8-sig") as csvfile:
+        reader = csv.DictReader(csvfile)
     for line in reader:
         student = datahub.get_user(line["Xnumber"])
         userid = student["UserId"]
