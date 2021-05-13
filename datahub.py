@@ -11,6 +11,7 @@ REPORT_PATH = \
 
 ASSIGNMENT_SUMMARY = DATA_PATH + "AssignmentSummary.csv"
 CONTENT_OBJECTS = DATA_PATH + "ContentObjects.csv"
+GRADE_OBJECTS = DATA_PATH + "GradeObjects.csv"
 DESCENDANTS = DATA_PATH + "OrganizationalUnitDescendants.csv"
 ORG_UNITS = DATA_PATH + "OrganizationalUnits.csv"
 ROLE_DETAILS = DATA_PATH + "RoleDetails.csv"
@@ -97,6 +98,12 @@ def get_semester_courses(semestercode):
             if row["OrgUnitId"] in ou_list and row["Type"] == "Course Offering":
                 course_list.append(row)
     return course_list
+
+def get_grade_objects(orgUnitId):
+    """returns a dict for each grade object in a list"""
+    with open(GRADE_OBJECTS, newline="", encoding="utf-8-sig") as infile:
+        reader = csv.DictReader(infile)
+        return [r for r in reader if r["OrgUnitId"] == orgUnitId]
 
 def cross_listed(semestercode):
     """Takes the Otis semester code and produces a csv report on all

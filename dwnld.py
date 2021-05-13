@@ -274,7 +274,7 @@ def get_files(orgUnitId, keyphrase, path):
 
 def rubrics_report(orgUnitId, userId, filename):
     """generates a report on all graded rubrics for a user in a course"""
-    if filename[:-4] != ".pdf":
+    if filename[-4:] != ".pdf":
         filename += ".pdf"  # handle errors with file extension
     grades_data = get_grades_values(orgUnitId, userId)
     gradeIds = []

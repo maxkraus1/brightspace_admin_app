@@ -11,8 +11,6 @@ import sys
 import datahub
 import dwnld
 
-report_path="G:/Shared drives/~ LMS Brightspace Implementation/Data Hub/Reports"
-
 with open(sys.argv[1], newline="", encoding="utf-8-sig") as csvfile:
     reader = csv.DictReader(csvfile)
     for line in reader:
@@ -22,5 +20,5 @@ with open(sys.argv[1], newline="", encoding="utf-8-sig") as csvfile:
         filename = "{}_{}_{}_RubricAssessments.pdf".format(course_code,
                                                            student["FirstName"],
                                                            student["LastName"])
-        filepath = os.path.join(report_path, filename)
+        filepath = os.path.join(datahub.REPORT_PATH, filename)
         dwnld.rubrics_report(line["OrgUnitId"], userid, filepath)

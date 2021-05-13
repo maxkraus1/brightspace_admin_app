@@ -13,6 +13,7 @@ data_sets = [
             'Assignment Summary',
             'Calendar Events',
             'Content Objects',
+            'Grade Objects',
             'Organizational Unit Descendants',
             'Organizational Units',
             'Role Details',
