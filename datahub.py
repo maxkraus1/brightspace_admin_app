@@ -65,12 +65,19 @@ def get_enrollments(orgUnitId):
         return enrollments
 
 def get_orgunit(code):
-    """Retrieves the D2L Org Unit Id for a semester or course code"""
+    """Retrieves the D2L Org Unit Id for a semester, department, or course"""
     with open(ORG_UNITS, newline="", encoding="utf-8-sig") as infile:
         reader = csv.DictReader(infile)
+        orgunit = None
         for row in reader:
             if row["Code"] == str(code) and row["Type"] != "Section":
-                return row["OrgUnitId"]
+                if orgunit == None:
+                    orgunit = row["OrgUnitId"]
+                else:
+                    print("Multiple Org Unit matches for this code!")
+                    orgunit = input("Please enter Org Unit Id number: ")
+                    return orgunit
+        return orgunit
 
 def get_role(roleId):
     """Retrieves the role name using the role Id"""
@@ -80,16 +87,15 @@ def get_role(roleId):
             if role["RoleId"] == str(roleId):
                 return role["RoleName"]
 
-def get_semester_courses(semestercode):
+def get_semester_courses(orgUnitId):
     """takes the Otis semester code and returns a list of dicts for each
     course offering in the semester
     """
-    sem = get_orgunit(semestercode)
     ou_list = []
     with open(DESCENDANTS, newline="", encoding="utf-8-sig") as infile:
         reader = csv.DictReader(infile)
         for row in reader:
-            if row["OrgUnitId"] == sem:
+            if row["OrgUnitId"] == orgUnitId:
                 ou_list.append(row["DescendantOrgUnitId"])
     course_list = []
     with open(ORG_UNITS, newline="", encoding="utf-8-sig") as infile:
@@ -105,11 +111,12 @@ def get_grade_objects(orgUnitId):
         reader = csv.DictReader(infile)
         return [r for r in reader if r["OrgUnitId"] == orgUnitId]
 
-def cross_listed(semestercode):
-    """Takes the Otis semester code and produces a csv report on all
+def cross_listed(orgUnitId):
+    """Takes the semester Org Unit Idand produces a csv report on all
     cross-listed courses in the semester
     """
-    all_courses = get_semester_courses(semestercode)
+    all_courses = get_semester_courses(orgUnitId)
+    semestercode = get_code(orgUnitId)
     pattern = r"[A-Z]{2}" + str(semestercode)
     cross_listed = [c for c in all_courses if re.match(pattern, c["Code"])]
     filename = os.path.join(REPORT_PATH,
