@@ -77,7 +77,10 @@ def get_orgunit(code):
                     print("Multiple Org Unit matches for this code!")
                     orgunit = input("Please enter Org Unit Id number: ")
                     return orgunit
-        return orgunit
+        if orgunit != None:
+            return orgunit
+        else:
+            raise ValueError("No org units found for this code!")
 
 def get_role(roleId):
     """Retrieves the role name using the role Id"""

@@ -1,7 +1,12 @@
 import json
+import os
+
 import requests
 
-with open("credentials.json") as infile:
+dir = os.path.dirname(__file__)
+creds_json = os.path.join(dir, "credentials.json")
+
+with open(creds_json) as infile:
     creds = json.load(infile)
 
 payload = {
@@ -21,9 +26,9 @@ response = requests.post(url, headers=headers, data=payload)
 if response.status_code == 200:
     new_creds = json.loads(response.text)
     creds.update(new_creds)
-    with open("credentials.json", "w") as outfile:
+    with open(creds_json, "w") as outfile:
         json.dump(creds, outfile, indent=4)
 
 else:
-    print("Error: " + response.status_code)
+    print("Error: " + str(response.status_code))
     print(json.dumps(response.text, indent=4))

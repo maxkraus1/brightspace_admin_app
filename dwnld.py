@@ -196,16 +196,23 @@ def get_children(orgUnitId, ouTypeId=None):
     """Returns a list of dicts of all child org units.
     Optional to specify Org Unit Type of children.
     """
-    url = DOMAIN + "/lp/{}/orgstructure/{}/children/".format(LP_VERSION,
+    url = DOMAIN + "/lp/{}/orgstructure/{}/children/paged/".format(LP_VERSION,
                                                             orgUnitId)
+    flag = True
+    params = {}
+    children = []
     if ouTypeId:
-        params = {'ouTypeId': ouTypeId}
+        params['ouTypeId'] = ouTypeId
         print("Org Unit Type Id: {}".format(ouTypeId))
+    while flag == True:
         response = requests.get(url, headers=HEADERS, params=params)
-    else:
-        response = requests.get(url, headers=HEADERS)
-    code_log(response, "GET children of {}".format(orgUnitId))
-    return json.loads(response.text)
+        code_log(response, "GET children of {} (paged)".format(orgUnitId))
+        page = json.loads(response.text)
+        params['bookmark'] = page['PagingInfo']['Bookmark']
+        children.extend(page['Items'])
+        if page['PagingInfo']['HasMoreItems'] == False:
+            flag = False        
+    return children
 
 def get_classlist(orgUnitId):
     """Returns a list of dicts for users enrolled in the org unit"""
@@ -270,44 +277,3 @@ def get_files(orgUnitId, keyphrase, path):
                             submissionId,
                             fileId,
                             filepath)
-
-
-def rubrics_report(orgUnitId, userId, filename):
-    """generates a report on all graded rubrics for a user in a course"""
-    if filename[-4:] != ".pdf":
-        filename += ".pdf"  # handle errors with file extension
-    grades_data = get_grades_values(orgUnitId, userId)
-    gradeIds = []
-    for g in grades_data:
-        if g['GradeObjectTypeName'] != 'Category':
-            gradeIds.append(g['GradeObjectIdentifier'])
-    assessments = []
-    rubrics = []
-    id_pairs = []
-    for id in gradeIds:
-        try:
-            r_list = get_rubrics(orgUnitId, 'Grades', id)
-            for rubric in r_list:
-                rubrics.append(rubric)
-                id_pairs.append({'objectId': id,
-                                'rubricId': rubric['RubricId']})
-        except:
-            logging.warning("No rubric for gradeId({})".format(id))
-            continue
-
-    for i in id_pairs:
-        try:
-            assessment = get_rubric_assessment(orgUnitId,
-                                            'Grades',
-                                            i['objectId'],
-                                            i['rubricId'],
-                                            userId)
-            assessments.append(assessment)
-        except:
-            logging.warning(
-                "No assessment for gradeId({})".format(i['objectId']))
-            continue
-    if assessments:
-        report.rubric_assessments(filename, assessments, rubrics)
-    else:
-        raise ValueError('No Assessments')

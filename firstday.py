@@ -5,12 +5,13 @@ Information unit before copying to it.
 
 The template (copy-from) course Org Unit Id is 10646.
 
-Provide the semester Org Unit Id as command line argument 1.
+Provide the Otis Semester Code as command line argument 1.
 """
 
 import csv
 import sys
 
+import datahub
 import dwnld
 
 DATA_PATH = "G:/Shared drives/~ LMS Brightspace Implementation/Data Hub"
@@ -51,6 +52,6 @@ def mklist(semesterId):
     return idlist
 
 if __name__ == "__main__":
-    semesterId = sys.argv[1]
+    semesterId = datahub.get_orgunit(sys.argv[1])
     idlist = mklist(semesterId)
     runner(idlist)
