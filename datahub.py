@@ -1,5 +1,6 @@
 """Functions to support scripts utilizing Data Hub CSV tables"""
 
+from collections import Counter
 import csv
 import os
 import re
@@ -143,6 +144,22 @@ def dept_sheet(descendants):
                 if row['Type'] == "Course Offering":
                     sheet.append(row)
         return [sheet, columns]
+
+def lookup_users(idlist):
+    """returns the course offerings in which all users in idlist are enrolled"""
+    courses = []
+    with open(USER_ENROLLMENTS, newline="", encoding="utf-8-sig") as file1:
+        reader1 = csv.DictReader(file1)
+        orgs = [e["OrgUnitId"] for e in reader1 if e["UserId"] in idlist]
+        org_count = Counter(orgs)
+        with open(ORG_UNITS, newline="", encoding="utf-8-sig") as file2:
+            reader2 = csv.DictReader(file2)
+            for row in reader2:
+                ouid = row["OrgUnitId"]
+                if ouid in orgs and org_count[ouid] == len(idlist):
+                    if row["Type"] == "Course Offering":
+                        courses.append(row)
+    return courses
 
 def signature_assignments(sem):
     """ Takes a semester OrgUnitId and writes a CSV file of assignments in the
