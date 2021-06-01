@@ -71,17 +71,17 @@ def get_orgunit(code):
         reader = csv.DictReader(infile)
         orgunit = None
         for row in reader:
-            if row["Code"] == str(code) and row["Type"] != "Section":
+            if str(row["Code"]) == str(code) and row["Type"] != "Section":
                 if orgunit == None:
                     orgunit = row["OrgUnitId"]
                 else:
-                    print("Multiple Org Unit matches for this code!")
+                    print("Multiple Org Unit matches for {}".format(code))
                     orgunit = input("Please enter Org Unit Id number: ")
                     return orgunit
         if orgunit != None:
             return orgunit
         else:
-            raise ValueError("No org units found for this code!")
+            raise ValueError("No org units found for {}".format(code))
 
 def get_role(roleId):
     """Retrieves the role name using the role Id"""
@@ -186,3 +186,23 @@ def signature_assignments(sem):
         print("{} created".format(os.path.basename(report)))
     else:
         raise ValueError('No Report Created')
+
+def add_org_column(csvfile):
+    """takes a csvfile and adds an org unit column"""
+    with open(csvfile, newline="", encoding="utf-8-sig") as infile:
+        reader = csv.DictReader(infile)
+        fields = reader.fieldnames
+        rows = [r for r in reader]
+    fields.append("OrgUnitId")
+    split = os.path.split(csvfile)
+    newfile = os.path.join(split[0], "EDIT_" + os.path.basename(csvfile))
+    with open(newfile, "w", newline="", encoding="utf-8-sig") as outfile:
+        writer = csv.DictWriter(outfile, fieldnames=fields)
+        writer.writeheader()
+        for row in rows:
+            try:
+                row["OrgUnitId"] = get_orgunit(str(row["Code"]))
+            except ValueError as error:
+                print(error)
+                row["OrgUnitId"] = None
+            writer.writerow(row)

@@ -57,7 +57,7 @@ def get_db_folders(orgUnitId, keyphrase):
     folders = json.loads(response.text)
     folderIds = []
     for item in folders:
-        if keyphrase in item["Name"]:
+        if keyphrase.lower() in item["Name"].lower():
             folderIds.append({"folderId": item["Id"],
                             "GradeItemId": item["GradeItemId"]})
     return folderIds
@@ -211,7 +211,7 @@ def get_children(orgUnitId, ouTypeId=None):
         params['bookmark'] = page['PagingInfo']['Bookmark']
         children.extend(page['Items'])
         if page['PagingInfo']['HasMoreItems'] == False:
-            flag = False        
+            flag = False
     return children
 
 def get_classlist(orgUnitId):
@@ -238,16 +238,27 @@ def put_course_info(orgUnitId, json_data):
 def get_files(orgUnitId, keyphrase, path):
     """Creates a Rubric Assessment file and downloads the submitted file."""
     folderIds = get_db_folders(orgUnitId, keyphrase)
+    if folderIds == []:
+        return "No Dropbox folders match the keyphrase!"
     for folder in folderIds:
         submission_data = get_submissions(orgUnitId, folder["folderId"])
-        grades_data = get_item_grades(orgUnitId, folder["GradeItemId"])
+        grades_data = None
+        if folder["GradeItemId"]:
+            grades_data = get_item_grades(orgUnitId, folder["GradeItemId"])
         for item in submission_data:
             name = item["Entity"]["DisplayName"]
 
-            for g in grades_data["Objects"]:
-                if g["User"]["Identifier"] == str(item["Entity"]["EntityId"]):
-                    grade = g["GradeValue"]["DisplayedGrade"]
-                    name += f"__{grade}_"
+            flag = False
+            if grades_data:
+                for g in grades_data["Objects"]:
+                    if g["User"]["Identifier"] == str(item["Entity"]["EntityId"]):
+                        if g["GradeValue"]:
+                            flag = True
+                            grade = g["GradeValue"]["DisplayedGrade"]
+                            name += f"__{grade}_"
+            elif flag == False:
+                name += "__[No Grade]_"
+
             if item["Feedback"]:
                 if item["Feedback"]["Feedback"]:
                     feedback = item["Feedback"]["Feedback"]["Html"]

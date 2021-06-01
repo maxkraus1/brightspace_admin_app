@@ -28,7 +28,6 @@ with open(to_download, newline="") as csvfile:
         try:
             os.mkdirs(coursepath)
             dwnld.get_files(orgUnitId, keyphrase, coursepath)
-            download_list.append(orgUnitId)
         except:
             if os.isdir(coursepath):
                 print(f"{coursepath} already exists")
