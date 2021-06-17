@@ -116,6 +116,14 @@ def get_rubric_assessment(orgUnitId, objectType, objectId, rubricId, userId):
     code_log(response, "GET rubric assessment rubricId({})".format(rubricId))
     return json.loads(response.text)
 
+def get_attachment(orgUnitId, folderId, entityType, entityId, fileId, path):
+    """retrieves an attachment from a Dropbox submission's feedback"""
+    url = "{}/le/{}/{}/dropbox/folders/{}/feedback/{}/{}/attachments/{}".format(
+        DOMAIN, LE_VERSION, orgUnitId, folderId, entityType, entityId, fileId)
+    response = requests.get(url, headers=HEADERS)
+    code_log(response, "GET attachment file Id: {}".format(fileId))
+    dwnld_stream(response, path)
+
 def get_grades_values(orgUnitId, userId):
     """Retrieves a JSON arrary of grade value blocks for one user and
     returns a list of dicts
@@ -241,17 +249,19 @@ def get_files(orgUnitId, keyphrase, path):
     if folderIds == []:
         return "No Dropbox folders match the keyphrase!"
     for folder in folderIds:
-        submission_data = get_submissions(orgUnitId, folder["folderId"])
+        submission_data = get_submissions(orgUnitId, folderId)
         grades_data = None
         if folder["GradeItemId"]:
             grades_data = get_item_grades(orgUnitId, folder["GradeItemId"])
         for item in submission_data:
             name = item["Entity"]["DisplayName"]
+            entityId = item["Entity"]["EntityId"]
+            entityType = item["Entity"]["EntityType"]
 
             flag = False
             if grades_data:
                 for g in grades_data["Objects"]:
-                    if g["User"]["Identifier"] == str(item["Entity"]["EntityId"]):
+                    if g["User"]["Identifier"]==str(item["Entity"]["EntityId"]):
                         if g["GradeValue"]:
                             flag = True
                             grade = g["GradeValue"]["DisplayedGrade"]
@@ -260,6 +270,16 @@ def get_files(orgUnitId, keyphrase, path):
                 name += "__[No Grade]_"
 
             if item["Feedback"]:
+                file_list = item["Feedback"]["Files"]
+                for file in file_list:
+                    print("found!!!!")
+                    fileId = file["FileId"]
+                    filename = file["FileName"]
+                    afilename = "{}_AttachmentFeedback_{}".format(name,
+                                                                filename)
+                    attach_path = os.path.join(path, afilename)
+                    get_attachment(orgUnitId, folder["folderId"], entityType,
+                                entityId, fileId, attach_path)
                 if item["Feedback"]["Feedback"]:
                     feedback = item["Feedback"]["Feedback"]["Html"]
                     fbfile = os.path.join(path, f"{name}_OverallFeedback.pdf")
