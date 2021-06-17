@@ -9,31 +9,37 @@ import tempfile
 from datahub import DATA_PATH
 import dwnld
 
-data_sets = [
-            'Assignment Summary',
-            'Calendar Events',
-            'Content Objects',
-            'Grade Objects',
-            'Organizational Unit Descendants',
-            'Organizational Units',
-            'Role Details',
-            'User Enrollments',
-            'Users'
-            ]
-diffs = [d + ' Differential' for d in data_sets]
+data_sets = {  # Name: Primary Key
+            'Assignment Summary': 'DropboxId',
+            'Calendar Events': 'ScheduleId',
+            'Content Objects': 'ContentObjectId',
+            'Grade Objects': 'GradeObjectId',
+            'Organizational Unit Descendants': None,
+            'Organizational Units': 'OrgUnitId',
+            'Role Details': 'RoleId',
+            'User Enrollments': None,
+            'Users': 'UserId'
+            }
+diffs = [d + ' Differential' for d in data_sets.keys()]
 # data_list = dwnld.get_datasets_list()
 exports = dwnld.get_all_bds()
 
-to_download = [i for i in exports if i['Name'] in data_sets]
+to_download = [i for i in exports if i['Name'] in data_sets.keys()]
 to_update = [e for e in exports if e['Name'] in diffs]
 
 # helper function
-def extend_list(update, updates):
+def extend_list(update, updates, primaryKey):
     with open(update, newline='', encoding='utf-8') as infile:
-        reader = csv.reader(infile)
-        next(reader)
-        for row in reader:
-            updates.append(row)
+        reader = csv.DictReader(infile)
+        if primaryKey:
+            for i, u in enumerate(updates):
+                for row in reader:
+                    if row[primaryKey] == u[primaryKey]:
+                        updates[i] = row
+                    else:
+                        updates.append(row)
+        else:
+            updates.extend([row for row in reader])
 
 # main program
 for item in to_download:
@@ -47,12 +53,13 @@ for item in to_download:
     if datetime.strptime(diff['CreatedDate'], format) > full_date:
         with tempfile.TemporaryDirectory() as temppath:
             update = dwnld.get_dataset_csv(diff['DownloadLink'], temppath)
-            extend_list(update, updates)
+            extend_list(update, updates, data_sets[item['Name']])
             for previous in diff['PreviousDataSets']:
                 if datetime.strptime(previous['CreatedDate'], format) > full_date:
                     update = dwnld.get_dataset_csv(previous['DownloadLink'], temppath)
-                    extend_list(update, updates)
+                    extend_list(update, updates, data_sets[item['Name']])
 
-    with open(csvfile, 'a', newline='', encoding='utf-8-sig') as outfile:
-        writer = csv.writer(outfile)
+    with open(csvfile, 'w', newline='', encoding='utf-8-sig') as outfile:
+        writer = csv.DictWriter(outfile, fieldnames=updates[0].keys())
+        writer.writeheader()
         writer.writerows(updates)
