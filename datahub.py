@@ -27,13 +27,12 @@ def get_descendants(dept, sem):
     dept_list = []
     sem_list = []
     with open(DESCENDANTS, newline="", encoding="utf-8-sig") as desc:
-        desc_reader = csv.reader(desc, delimiter=',')
-        next(desc_reader)
+        desc_reader = csv.DictReader(desc, delimiter=',')
         for row in desc_reader:
-            if row[0] == str(dept):
-                dept_list.append(row[1])
-            if row[0] == str(sem):
-                sem_list.append(row[1])
+            if row["OrgUnitId"] == str(dept):
+                dept_list.append(row["DescendantOrgUnitId"])
+            if row["OrgUnitId"] == str(sem):
+                sem_list.append(row["DescendantOrgUnitId"])
         for id in dept_list:
             if id in sem_list:
                 desc_list.append(id)
