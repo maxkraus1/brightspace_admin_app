@@ -48,11 +48,11 @@ def main():
                     updates.append(previous)
             updates.sort(key=itemgetter('CreatedDate'))  # sort by ascending date
 
-        df = composite(pd.read_csv(csvfile), pk)
+        df = composite(pd.read_csv(csvfile, dtype=str), pk)
         with tempfile.TemporaryDirectory() as temppath:
             for u in updates:
                 update = dwnld.get_dataset_csv(u['DownloadLink'], temppath)
-                df2 = composite(pd.read_csv(update), pk)
+                df2 = composite(pd.read_csv(update, dtype=str), pk)
                 df = df.copy().reindex(index=df.index.union(df2.index))
                 df.update(df2)
 
