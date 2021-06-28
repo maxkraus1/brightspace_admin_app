@@ -46,12 +46,16 @@ def get_code(orgUnitId):
             if row["OrgUnitId"] == str(orgUnitId):
                  return row["Code"]
 
-def get_user(xnumber):
+def get_user(id):
     """Retrives info on a user from their X number"""
     with open(USERS, newline="", encoding="utf-8-sig") as infile:
         reader = csv.DictReader(infile)
+        try:
+            field = "OrgDefinedId" if id[0] == "X" else "UserId"
+        except:
+            field = "UserId"
         for row in reader:
-            if row["OrgDefinedId"] == xnumber:
+            if row[field] == str(id):
                 return row
 
 def get_enrollments(orgUnitId):

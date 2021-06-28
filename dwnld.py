@@ -25,10 +25,7 @@ logging.basicConfig(
     ]
 )
 
-# Authorization:
-# Postman Collection Refresh Token >
-# POST Request a New Access Token and Refresh Token
-# Send and Download to the script's directory
+# Authorization: run auth.py
 token_data = json.load(open(os.path.join(dir, "credentials.json")))
 HEADERS={'Authorization': 'Bearer {}'.format(token_data['access_token'])}
 
