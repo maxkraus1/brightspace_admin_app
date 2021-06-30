@@ -1,58 +1,62 @@
 """Updates the Data Hub csv tables to the Google Drive path"""
 
-import csv
-from datetime import datetime
-import io
-import os
+from operator import itemgetter
 import tempfile
+
+import pandas as pd
 
 from datahub import DATA_PATH
 import dwnld
 
-data_sets = [
-            'Assignment Summary',
-            'Calendar Events',
-            'Content Objects',
-            'Grade Objects',
-            'Organizational Unit Descendants',
-            'Organizational Units',
-            'Role Details',
-            'User Enrollments',
-            'Users'
-            ]
-diffs = [d + ' Differential' for d in data_sets]
-# data_list = dwnld.get_datasets_list()
-exports = dwnld.get_all_bds()
+data_sets = {  # Name: Primary Key
+            'Assignment Summary': 'DropboxId',
+            'Calendar Events': 'ScheduleId',
+            'Content Objects': 'ContentObjectId',
+            'Grade Objects': 'GradeObjectId',
+            'Organizational Unit Descendants': ['OrgUnitId', 'DescendantOrgUnitId'],
+            'Organizational Units': 'OrgUnitId',
+            'Role Details': 'RoleId',
+            'User Enrollments': ['OrgUnitId', 'UserId'],
+            'Users': 'UserId'
+            }
 
-to_download = [i for i in exports if i['Name'] in data_sets]
-to_update = [e for e in exports if e['Name'] in diffs]
+def composite(df, pk):
+    """Sets the index of a dataframe to pk
+    and handles multiple primary keys"""
+    if type(pk) == list:
+        df["PrimaryKey"] = df[pk[0]].apply(str) + "_" + df[pk[1]].apply(str)
+        pk = "PrimaryKey"
+    df.set_index(pk, inplace=True)
+    return df
 
-# helper function
-def extend_list(update, updates):
-    with open(update, newline='', encoding='utf-8') as infile:
-        reader = csv.reader(infile)
-        next(reader)
-        for row in reader:
-            updates.append(row)
+def main():
+    diffs = [d + ' Differential' for d in data_sets.keys()]
+    exports = dwnld.get_all_bds()
+    to_download = [i for i in exports if i['Name'] in data_sets.keys()]
+    to_update = [e for e in exports if e['Name'] in diffs]
+    for item in to_download:
+        pk = data_sets[item['Name']]
+        csvfile = dwnld.get_dataset_csv(item['DownloadLink'], DATA_PATH)
+        full_date = item['CreatedDate']
+        diff = next(d for d in to_update if d['Name'][:-13] == item['Name'])
+        updates = []
 
-# main program
-for item in to_download:
-    dwnld.get_dataset_csv(item['DownloadLink'], DATA_PATH)
-    filename = item['Name'].replace(' ','')
-    csvfile = os.path.join(DATA_PATH, '{}.csv'.format(filename))
-    format = '%Y-%m-%dT%H:%M:%S.%fZ'
-    full_date = datetime.strptime(item['CreatedDate'], format)
-    updates = []
-    diff = next(d for d in to_update if d['Name'][:-13] == item['Name'])
-    if datetime.strptime(diff['CreatedDate'], format) > full_date:
-        with tempfile.TemporaryDirectory() as temppath:
-            update = dwnld.get_dataset_csv(diff['DownloadLink'], temppath)
-            extend_list(update, updates)
+        if diff['CreatedDate'] > full_date:
+            updates.append(diff)
             for previous in diff['PreviousDataSets']:
-                if datetime.strptime(previous['CreatedDate'], format) > full_date:
-                    update = dwnld.get_dataset_csv(previous['DownloadLink'], temppath)
-                    extend_list(update, updates)
+                if previous['CreatedDate'] > full_date:
+                    updates.append(previous)
+            updates.sort(key=itemgetter('CreatedDate'))  # sort by ascending date
 
-    with open(csvfile, 'a', newline='', encoding='utf-8-sig') as outfile:
-        writer = csv.writer(outfile)
-        writer.writerows(updates)
+        df = composite(pd.read_csv(csvfile, dtype=str), pk)
+        with tempfile.TemporaryDirectory() as temppath:
+            for u in updates:
+                update = dwnld.get_dataset_csv(u['DownloadLink'], temppath)
+                df2 = composite(pd.read_csv(update, dtype=str), pk)
+                df = df.copy().reindex(index=df.index.union(df2.index))
+                df.update(df2)
+
+        df.to_csv(csvfile, encoding='utf-8')
+
+if __name__ == "__main__":
+    main()

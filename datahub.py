@@ -27,13 +27,12 @@ def get_descendants(dept, sem):
     dept_list = []
     sem_list = []
     with open(DESCENDANTS, newline="", encoding="utf-8-sig") as desc:
-        desc_reader = csv.reader(desc, delimiter=',')
-        next(desc_reader)
+        desc_reader = csv.DictReader(desc, delimiter=',')
         for row in desc_reader:
-            if row[0] == str(dept):
-                dept_list.append(row[1])
-            if row[0] == str(sem):
-                sem_list.append(row[1])
+            if row["OrgUnitId"] == str(dept):
+                dept_list.append(row["DescendantOrgUnitId"])
+            if row["OrgUnitId"] == str(sem):
+                sem_list.append(row["DescendantOrgUnitId"])
         for id in dept_list:
             if id in sem_list:
                 desc_list.append(id)
@@ -47,12 +46,16 @@ def get_code(orgUnitId):
             if row["OrgUnitId"] == str(orgUnitId):
                  return row["Code"]
 
-def get_user(xnumber):
+def get_user(id):
     """Retrives info on a user from their X number"""
     with open(USERS, newline="", encoding="utf-8-sig") as infile:
         reader = csv.DictReader(infile)
+        try:
+            field = "OrgDefinedId" if id[0] == "X" else "UserId"
+        except:
+            field = "UserId"
         for row in reader:
-            if row["OrgDefinedId"] == xnumber:
+            if row[field] == str(id):
                 return row
 
 def get_enrollments(orgUnitId):
