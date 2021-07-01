@@ -17,12 +17,14 @@ writer = pd.ExcelWriter(name)
 
 def format_sheet(df, sheet_name):
     """"""
+    df.drop(columns=["Organization", "Type", "IsDeleted", "DeletedDate",
+                "RecycledDate", "Version", "OrgUnitTypeId"],
+            inplace=True)
     df.sort_values(['Name'], inplace=True)  # Sort by Course Name
     df.to_excel(writer, sheet_name=sheet_name, index=False)
     worksheet = writer.sheets[sheet_name]
-    worksheet.set_column('C:C', 16)  # format columns for Type, Name, and Code
-    worksheet.set_column('D:D', 69)
-    worksheet.set_column('E:E', 13)
+    worksheet.set_column('B:B', 70)
+    worksheet.set_column('C:C', 13)
 
 def bfa_mfa():
     """Produces a report for BFA/MFA semester with one department per tab"""
