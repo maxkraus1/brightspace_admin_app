@@ -31,7 +31,9 @@ def main():
         datahub.cross_listed(sem)
     courses = pd.DataFrame(datahub.get_semester_courses(sem))
     dept_index = datahub.dept_index()
+    instructors = datahub.instructor_index()
     df = courses.join(dept_index, on="OrgUnitId")
+    df = df.merge(instructors, how="left", on="OrgUnitId")
     format_sheet(df, sem_code)
     writer.save()
 
