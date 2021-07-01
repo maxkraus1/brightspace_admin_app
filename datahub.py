@@ -5,6 +5,8 @@ import csv
 import os
 import re
 
+import pandas as pd
+
 DATA_PATH = \
 "G:/Shared drives/~ LMS Brightspace Implementation/Data Hub/Data Sets/"
 REPORT_PATH = \
@@ -94,6 +96,17 @@ def get_role(roleId):
             if role["RoleId"] == str(roleId):
                 return role["RoleName"]
 
+def dept_index():
+    """returns a dict of {dept org unit: {dept code: [descendant courses]}}"""
+    ou = pd.read_csv(ORG_UNITS, dtype="string")
+    ou = ou[ou.Type == "Department"]
+    ou.rename(columns={"Code": "DeptCode"}, inplace=True)
+    desc = pd.read_csv(DESCENDANTS, dtype="string")
+    df = ou.set_index("OrgUnitId").join(desc.set_index("OrgUnitId"))
+    df.set_index("DescendantOrgUnitId", inplace=True)
+    return df[["DeptCode"]].copy()
+
+
 def get_semester_courses(orgUnitId):
     """takes the Otis semester code and returns a list of dicts for each
     course offering in the semester
@@ -102,7 +115,7 @@ def get_semester_courses(orgUnitId):
     with open(DESCENDANTS, newline="", encoding="utf-8-sig") as infile:
         reader = csv.DictReader(infile)
         for row in reader:
-            if row["OrgUnitId"] == orgUnitId:
+            if row["OrgUnitId"] == str(orgUnitId):
                 ou_list.append(row["DescendantOrgUnitId"])
     course_list = []
     with open(ORG_UNITS, newline="", encoding="utf-8-sig") as infile:
