@@ -118,6 +118,13 @@ def instructor_index():
                                 "UserName": "InstructorXnumber",
                                 "ExternalEmail": "InstructorEmail"})
 
+def stud_enroll_index():
+    """returns a series of OrgUnitId: StudentCount"""
+    df = pd.read_csv(USER_ENROLLMENTS, dtype="string")
+    df = df[df.RoleName == "Student / Learner"]
+    counts = df.value_counts("OrgUnitId", sort=False)
+    return counts.rename("StudentCount")
+
 def get_semester_courses(orgUnitId):
     """takes the Otis semester code and returns a list of dicts for each
     course offering in the semester
