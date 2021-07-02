@@ -16,6 +16,7 @@ data_sets = {  # Name: Primary Key
             'Organizational Unit Descendants': ['OrgUnitId', 'DescendantOrgUnitId'],
             'Organizational Units': 'OrgUnitId',
             'Role Details': 'RoleId',
+            'Session History': 'HistoryId',
             'User Enrollments': ['OrgUnitId', 'UserId'],
             'Users': 'UserId'
             }
@@ -35,7 +36,7 @@ def main():
     to_download = [i for i in exports if i['Name'] in data_sets.keys()]
     to_update = [e for e in exports if e['Name'] in diffs]
     for item in to_download:
-        pk = data_sets[item['Name']]
+        pk = data_sets[item['Name']]  # define primary key
         csvfile = dwnld.get_dataset_csv(item['DownloadLink'], DATA_PATH)
         full_date = item['CreatedDate']
         diff = next(d for d in to_update if d['Name'][:-13] == item['Name'])
@@ -53,7 +54,9 @@ def main():
             for u in updates:
                 update = dwnld.get_dataset_csv(u['DownloadLink'], temppath)
                 df2 = composite(pd.read_csv(update, dtype=str), pk)
+                # combine df + df2 index to create blank rows for inserts:
                 df = df.copy().reindex(index=df.index.union(df2.index))
+                # df2 rows overwrite (update) or go into blank df rows (insert):
                 df.update(df2)
 
         df.to_csv(csvfile, encoding='utf-8')
