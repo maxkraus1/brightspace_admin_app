@@ -125,6 +125,12 @@ def stud_enroll_index():
     counts = df.value_counts("OrgUnitId", sort=False)
     return counts.rename("StudentCount")
 
+def content_obj_counts():
+    """returns a series of OrgUnitId: ContentObjCount"""
+    df = pd.read_csv(CONTENT_OBJECTS, dtype="string")
+    counts = df.value_counts("OrgUnitId", sort=False)
+    return counts.rename("ContentObjCount")
+
 def get_semester_courses(orgUnitId):
     """takes the Otis semester code and returns a list of dicts for each
     course offering in the semester

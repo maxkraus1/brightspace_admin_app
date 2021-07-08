@@ -22,7 +22,7 @@ def format_sheet(df, sheet_name):
     worksheet = writer.sheets[sheet_name]
     worksheet.set_column('B:B', 70)
     worksheet.set_column('C:C', 13)
-    worksheet.set_column('E:G', 18)
+    worksheet.set_column('E:H', 18)
 
 def main():
     if sem_code[-1] == '0':
@@ -32,9 +32,11 @@ def main():
     dept_index = datahub.dept_index()
     instructors = datahub.instructor_index()
     counts = datahub.stud_enroll_index()
+    contentobjs = datahub.content_obj_counts()
     df = courses.join(dept_index, on="OrgUnitId")
     df = df.merge(instructors, how="left", on="OrgUnitId")
     df = df.merge(counts, how="left", on="OrgUnitId")
+    df = df.merge(contentobjs, how="left", on="OrgUnitId")
     format_sheet(df, sem_code)
     writer.save()
 
