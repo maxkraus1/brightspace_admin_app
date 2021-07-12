@@ -1,6 +1,8 @@
 """Updates the Data Hub csv tables to the Google Drive path"""
 
+import json
 from operator import itemgetter
+import os
 import tempfile
 
 import pandas as pd
@@ -8,18 +10,8 @@ import pandas as pd
 from datahub import DATA_PATH
 import dwnld
 
-data_sets = {  # Name: Primary Key
-            'Assignment Summary': 'DropboxId',
-            'Calendar Events': 'ScheduleId',
-            'Content Objects': 'ContentObjectId',
-            'Grade Objects': 'GradeObjectId',
-            'Organizational Unit Descendants': ['OrgUnitId', 'DescendantOrgUnitId'],
-            'Organizational Units': 'OrgUnitId',
-            'Role Details': 'RoleId',
-            'Session History': 'HistoryId',
-            'User Enrollments': ['OrgUnitId', 'UserId'],
-            'Users': 'UserId'
-            }
+with open(os.path.join(os.path.dirname(__file__), "datasets.json")) as jsonfile:
+    data_sets = json.load(jsonfile)
 
 def composite(df, pk):
     """Sets the index of a dataframe to pk
