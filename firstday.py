@@ -29,11 +29,16 @@ def runner(idlist):
                 first_day.append(module)
         if not first_day:
             copylist.append(id)
-    if not copylist:
-        print('No courses to copy to')
-
-    for id in copylist:
-        dwnld.course_copy(id, 10646, ['Content', 'CourseFiles'])
+    if copylist:
+        print("There are {} courses without a First Day Information Unit".format(len(copylist)))
+        copy = input("Would you like to copy? (Y/N): ")
+        if copy.lower() in ("y", "yes"):
+            for id in copylist:
+                dwnld.course_copy(id, 10646, ['Content', 'CourseFiles'])
+        else:
+            print("copy aborted")
+    else:
+        print("No courses to copy to")
 
 def mklist(semesterId):
     """Returns a list of course offering ids that are children of the semester
