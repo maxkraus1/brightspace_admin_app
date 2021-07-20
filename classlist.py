@@ -12,7 +12,6 @@ import pandas as pd
 
 import datahub
 import dwnld
-import report
 
 semester, department = sys.argv[1], sys.argv[2]
 path = "G:/Shared drives/~ LMS Brightspace Implementation/Data Hub"
@@ -33,11 +32,7 @@ courses = datahub.dept_sheet(datahub.get_descendants(dept_ou, sem_ou))
 for row in courses[0]:
     roster = dwnld.get_classlist(row["OrgUnitId"])
     for user in roster:
-        with open(role_details,newline="",encoding="utf-8-sig") as rfile:
-            roles = csv.DictReader(rfile, delimiter=",")
-            for role in roles:
-                if str(user["RoleId"]) == role["RoleId"]:
-                    user["Role"] = role["RoleName"]
+        user["Role"] = datahub.get_role(user["RoleId"])
 
     result = re.search(r"\((.+)\)", row["Name"])  # get course code from Name
     code = result.group(1)
