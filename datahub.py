@@ -5,6 +5,8 @@ import csv
 import os
 import re
 
+import pandas as pd
+
 DATA_PATH = \
 "G:/Shared drives/~ LMS Brightspace Implementation/Data Hub/Data Sets/"
 REPORT_PATH = \
@@ -94,6 +96,41 @@ def get_role(roleId):
             if role["RoleId"] == str(roleId):
                 return role["RoleName"]
 
+def dept_index():
+    """returns a dataframe of OrgUnitId|DeptCode"""
+    ou = pd.read_csv(ORG_UNITS, dtype="string")
+    ou = ou[ou.Type == "Department"]
+    ou.rename(columns={"Code": "DeptCode"}, inplace=True)
+    desc = pd.read_csv(DESCENDANTS, dtype="string")
+    df = ou.set_index("OrgUnitId").join(desc.set_index("OrgUnitId"))
+    df.set_index("DescendantOrgUnitId", inplace=True)
+    return df[["DeptCode"]].copy()
+
+def instructor_index():
+    """returns a dataframe of OrgUnitId|XNumber|Email"""
+    users = pd.read_csv(USERS, dtype="string")
+    df1 = pd.read_csv(USER_ENROLLMENTS, dtype="string")
+    df1 = df1[df1.RoleName == "Faculty / Instructor"]
+    df1 = df1.filter(items=["OrgUnitId", "UserId"])
+    df2 = df1.merge(users, how="left", on="UserId")
+    df2 = df2.filter(items=['OrgUnitId', 'UserName', 'ExternalEmail'])
+    return df2.rename(columns={"UserId": "InstructorUserId",
+                                "UserName": "InstructorXnumber",
+                                "ExternalEmail": "InstructorEmail"})
+
+def stud_enroll_index():
+    """returns a series of OrgUnitId: StudentCount"""
+    df = pd.read_csv(USER_ENROLLMENTS, dtype="string")
+    df = df[df.RoleName == "Student / Learner"]
+    counts = df.value_counts("OrgUnitId", sort=False)
+    return counts.rename("StudentCount")
+
+def content_obj_counts():
+    """returns a series of OrgUnitId: ContentObjCount"""
+    df = pd.read_csv(CONTENT_OBJECTS, dtype="string")
+    counts = df.value_counts("OrgUnitId", sort=False)
+    return counts.rename("ContentObjCount")
+
 def get_semester_courses(orgUnitId):
     """takes the Otis semester code and returns a list of dicts for each
     course offering in the semester
@@ -102,7 +139,7 @@ def get_semester_courses(orgUnitId):
     with open(DESCENDANTS, newline="", encoding="utf-8-sig") as infile:
         reader = csv.DictReader(infile)
         for row in reader:
-            if row["OrgUnitId"] == orgUnitId:
+            if row["OrgUnitId"] == str(orgUnitId):
                 ou_list.append(row["DescendantOrgUnitId"])
     course_list = []
     with open(ORG_UNITS, newline="", encoding="utf-8-sig") as infile:

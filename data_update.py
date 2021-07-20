@@ -1,6 +1,8 @@
 """Updates the Data Hub csv tables to the Google Drive path"""
 
+import json
 from operator import itemgetter
+import os
 import tempfile
 
 import pandas as pd
@@ -8,17 +10,8 @@ import pandas as pd
 from datahub import DATA_PATH
 import dwnld
 
-data_sets = {  # Name: Primary Key
-            'Assignment Summary': 'DropboxId',
-            'Calendar Events': 'ScheduleId',
-            'Content Objects': 'ContentObjectId',
-            'Grade Objects': 'GradeObjectId',
-            'Organizational Unit Descendants': ['OrgUnitId', 'DescendantOrgUnitId'],
-            'Organizational Units': 'OrgUnitId',
-            'Role Details': 'RoleId',
-            'User Enrollments': ['OrgUnitId', 'UserId'],
-            'Users': 'UserId'
-            }
+with open(os.path.join(os.path.dirname(__file__), "datasets.json")) as jsonfile:
+    data_sets = json.load(jsonfile)
 
 def composite(df, pk):
     """Sets the index of a dataframe to pk
@@ -35,7 +28,7 @@ def main():
     to_download = [i for i in exports if i['Name'] in data_sets.keys()]
     to_update = [e for e in exports if e['Name'] in diffs]
     for item in to_download:
-        pk = data_sets[item['Name']]
+        pk = data_sets[item['Name']]  # define primary key
         csvfile = dwnld.get_dataset_csv(item['DownloadLink'], DATA_PATH)
         full_date = item['CreatedDate']
         diff = next(d for d in to_update if d['Name'][:-13] == item['Name'])
@@ -53,7 +46,9 @@ def main():
             for u in updates:
                 update = dwnld.get_dataset_csv(u['DownloadLink'], temppath)
                 df2 = composite(pd.read_csv(update, dtype=str), pk)
+                # combine df + df2 index to create blank rows for inserts:
                 df = df.copy().reindex(index=df.index.union(df2.index))
+                # df2 rows overwrite (update) or go into blank df rows (insert):
                 df.update(df2)
 
         df.to_csv(csvfile, encoding='utf-8')

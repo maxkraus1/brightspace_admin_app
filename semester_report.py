@@ -17,38 +17,28 @@ writer = pd.ExcelWriter(name)
 
 def format_sheet(df, sheet_name):
     """"""
-    df.drop(columns=["Organization", "Type", "IsDeleted", "DeletedDate",
-                "RecycledDate", "Version", "OrgUnitTypeId"],
-            inplace=True)
-    df.sort_values(['Name'], inplace=True)  # Sort by Course Name
+    df.sort_values(['DeptCode', 'Name'], inplace=True)  # Sort by Course Name
     df.to_excel(writer, sheet_name=sheet_name, index=False)
     worksheet = writer.sheets[sheet_name]
     worksheet.set_column('B:B', 70)
     worksheet.set_column('C:C', 13)
+    worksheet.set_column('E:H', 18)
 
-def bfa_mfa():
-    """Produces a report for BFA/MFA semester with one department per tab"""
-    datahub.cross_listed(sem) # create cross-listed csv report
-    code_list = os.path.join(datahub.DATA_PATH, "BFA-MFACodes.txt")
-    with open(code_list) as f:
-        for i in f.readlines():
-            dept = i.rstrip()
-            descendants = datahub.get_descendants(dept, sem)
-            dept_code = datahub.get_code(dept)
-            sheet = datahub.dept_sheet(descendants)
-            df = pd.DataFrame(sheet[0], columns=sheet[1])
-            format_sheet(df, dept_code)
-
-def extension():
-    """produces a report with all course offerings in an extension semester"""
-    courses = datahub.get_semester_courses(sem)
-    fieldnames = courses[0].keys()
-    df = pd.DataFrame(courses, columns=fieldnames)
+def main():
+    if sem_code[-1] == '0':
+        datahub.cross_listed(sem)
+    courses = pd.DataFrame(datahub.get_semester_courses(sem))
+    courses = courses.filter(items=["OrgUnitId", "Name", "Code"])
+    dept_index = datahub.dept_index()
+    instructors = datahub.instructor_index()
+    counts = datahub.stud_enroll_index()
+    contentobjs = datahub.content_obj_counts()
+    df = courses.join(dept_index, on="OrgUnitId")
+    df = df.merge(instructors, how="left", on="OrgUnitId")
+    df = df.merge(counts, how="left", on="OrgUnitId")
+    df = df.merge(contentobjs, how="left", on="OrgUnitId")
     format_sheet(df, sem_code)
+    writer.save()
 
 if __name__ == "__main__":
-    if sem_code[-1] != '0':
-        extension()
-    else:
-        bfa_mfa()
-    writer.save()
+    main()
