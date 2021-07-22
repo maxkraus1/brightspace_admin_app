@@ -114,9 +114,11 @@ def instructor_index():
     df1 = df1.filter(items=["OrgUnitId", "UserId"])
     df2 = df1.merge(users, how="left", on="UserId")
     df2 = df2.filter(items=['OrgUnitId', 'UserName', 'ExternalEmail'])
-    return df2.rename(columns={"UserId": "InstructorUserId",
-                                "UserName": "InstructorXnumber",
-                                "ExternalEmail": "InstructorEmail"})
+    df3 = df2.astype(str).groupby(["OrgUnitId"], as_index=False).agg(
+                            {"UserName": ",".join, "ExternalEmail": ",".join})
+    return df3.rename(columns={
+                            "UserName": "InstructorXnumber",
+                            "ExternalEmail": "InstructorEmail"})
 
 def stud_enroll_index():
     """returns a series of OrgUnitId: StudentCount"""
@@ -160,16 +162,14 @@ def cross_listed(orgUnitId):
     cross-listed courses in the semester
     """
     all_courses = get_semester_courses(orgUnitId)
-    semestercode = get_code(orgUnitId)
-    pattern = r"[A-Z]{2}" + str(semestercode)
-    cross_listed = [c for c in all_courses if re.match(pattern, c["Code"])]
-    filename = os.path.join(REPORT_PATH,
-        "Semester Course Reports/{}_CrossListed.csv".format(semestercode))
-    with open(filename, "w", newline="") as outfile:
-        fieldnames = all_courses[0].keys()
-        writer = csv.DictWriter(outfile, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(cross_listed)
+    pattern = r"\(([A-Z]{4}.+)\)"
+    cross_listed = []
+    for c in all_courses:
+        result = re.search(pattern, c["Name"])
+        if len(result.group(1)) > 11:
+            cross_listed.append(c)
+    return pd.DataFrame(cross_listed)
+
 
 def dept_sheet(descendants):
     """Takes the results of get_descendants() and generates a list obejct
