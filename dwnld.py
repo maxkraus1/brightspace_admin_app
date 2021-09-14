@@ -197,6 +197,12 @@ def course_copy(destId, sourceId, components=None):
                                                             destId,
                                                             response.text))
 
+def get_copy_logs(params=None):
+    """retrieves course copy logs for the selected parameters"""
+    url = DOMAIN + "/le/unstable/ccb/logs"
+    response = requests.get(url, headers=HEADERS, params=params)
+    return response.status_code
+
 def get_children(orgUnitId, ouTypeId=None):
     """Returns a list of dicts of all child org units.
     Optional to specify Org Unit Type of children.

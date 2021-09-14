@@ -15,6 +15,7 @@ import datahub
 import dwnld
 
 DATA_PATH = "G:/Shared drives/~ LMS Brightspace Implementation/Data Hub"
+sourceId = 10646
 
 def runner(idlist):
     """copies the First Day Information module to each course in idlist
@@ -34,7 +35,7 @@ def runner(idlist):
         copy = input("Would you like to copy? (Y/N): ")
         if copy.lower() in ("y", "yes"):
             for id in copylist:
-                dwnld.course_copy(id, 10646, ['Content', 'CourseFiles'])
+                dwnld.course_copy(id, sourceId, ['Content', 'CourseFiles'])
         else:
             print("copy aborted")
     else:
@@ -53,7 +54,12 @@ def mklist(semesterId):
         for row in reader:
             if row['Title'] == 'First Day Information':
                 firstdaylist.append(row['OrgUnitId'])
-    idlist = [i for i in childlist if i not in firstdaylist]
+    idlist = []
+    for i in childlist:
+        if i not in firstdaylist:
+            status = dwnld.get_copy_logs({"sourceOrgUnitId": sourceId,"destinationOrgUnitId": i})
+            if status == 404: # make sure default was not deleted by instructor
+                idlist.append(i)
     return idlist
 
 if __name__ == "__main__":
