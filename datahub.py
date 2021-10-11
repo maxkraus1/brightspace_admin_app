@@ -115,7 +115,7 @@ def instructor_index():
     df2 = df1.merge(users, how="left", on="UserId")
     df2 = df2.filter(items=['OrgUnitId', 'UserName', 'ExternalEmail'])
     df3 = df2.astype(str).groupby(["OrgUnitId"], as_index=False).agg(
-                            {"UserName": ",".join, "ExternalEmail": ",".join})
+                            {"UserName": "; ".join, "ExternalEmail": "; ".join})
     return df3.rename(columns={
                             "UserName": "InstructorXnumber",
                             "ExternalEmail": "InstructorEmail"})
