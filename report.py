@@ -93,4 +93,6 @@ def rubric_assessments(filename, assessments, rubrics_data):
     if story:
         report.build(story)
     else:
-        raise ValueError('Report story is Empty!')
+        story.append(Paragraph('No rubric assessments found'))
+        report.build(story)
+        print(f'[WARNING] no rubric assessments for {filename}')

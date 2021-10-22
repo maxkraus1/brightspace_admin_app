@@ -9,6 +9,7 @@ courses in a department
 import argparse
 from operator import itemgetter
 import os
+import re
 import pandas as pd
 
 import datahub
@@ -31,6 +32,7 @@ def main(ou, report_path):
     classlist=sorted([u for u in dwnld.get_classlist(ou) if u['RoleId'] == 110],
                         key=itemgetter('DisplayName'))
     course_info = dwnld.get_course_info(ou)
+    name_format = re.sub(r'[^\w\-_\(\) ]', '_', course_info['Name'])  # handle invalid path chars
 
     def excel_report():
         df = pd.read_csv(datahub.GRADE_OBJECTS)
@@ -45,7 +47,7 @@ def main(ou, report_path):
             for g in grades:
                 df2.at[user['Username'], int(g['GradeObjectIdentifier'])] = g['DisplayedGrade']
 
-        filename = os.path.join(report_path, "{}.xlsx".format(course_info['Name']))
+        filename = os.path.join(report_path, f'{name_format}.xlsx')
         with pd.ExcelWriter(filename) as writer:
             df2.to_excel(writer, sheet_name='Grades')
             writer.book.add_format().set_align('center_across')
@@ -61,7 +63,7 @@ def main(ou, report_path):
             grades = dwnld.get_grades_values(ou, u['Identifier'])
             for g in grades:
                 body += "{}: <b>{}</b> | ".format(g['GradeObjectName'], g['DisplayedGrade'])
-        filename = os.path.join(report_path, '{}.pdf'.format(course_info['Name']))
+        filename = os.path.join(report_path, f'{name_format}.pdf')
         report.simple(filename, course_info['Name'], body)
 
     if args.pdf:
@@ -69,18 +71,29 @@ def main(ou, report_path):
     else:
         excel_report()
 
+def valid_semester_orgunits(dept_code, sem_code):
+    """returns a list of OrgUnitIds for courses in the department with
+    more than 0 students enrolled
+    """
+    filename = '{}_SemesterReport.xlsx'.format(sem_code)
+    report = os.path.join(datahub.REPORT_PATH, 'Semester Course Reports', filename)
+    df = pd.read_excel(report)
+    df = df[(df['DeptCode'] == dept_code) & (df['StudentCount'] > 0)]
+    return df['OrgUnitId'].to_list()
 
 if __name__ == '__main__':
 
     if args.dept:  # check if --dept arg was provided
         dept_code = input("Enter department code: ")
         sem_code = input("Enter semester code: ")
-        dept_ou = datahub.get_orgunit(dept_code)
-        sem_ou = datahub.get_orgunit(sem_code)
-        course_org_units = datahub.get_descendants(dept_ou, sem_ou)
-        report_path = os.path.join(datahub.REPORT_PATH, dept_code, sem_code)
+        course_org_units = valid_semester_orgunits(dept_code, sem_code)
+        report_path = os.path.join(
+                                    datahub.REPORT_PATH,
+                                    f'{dept_code} Nest Reports',
+                                    f'{sem_code} Grades'
+                                    )
         if not os.path.isdir(report_path):
-            os.mkdir(report_path)
+            os.makedirs(report_path)
         for ou in course_org_units:
             print(f'starting report for {ou}')
             course_info = dwnld.get_course_info(ou)
