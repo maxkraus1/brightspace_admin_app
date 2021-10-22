@@ -18,6 +18,7 @@ GRADE_OBJECTS = DATA_PATH + "GradeObjects.csv"
 DESCENDANTS = DATA_PATH + "OrganizationalUnitDescendants.csv"
 ORG_UNITS = DATA_PATH + "OrganizationalUnits.csv"
 ROLE_DETAILS = DATA_PATH + "RoleDetails.csv"
+RUBRIC_ASSESSMENT = DATA_PATH + "RubricAssessment.csv"
 USER_ENROLLMENTS = DATA_PATH + "UserEnrollments.csv"
 USERS = DATA_PATH + "Users.csv"
 

@@ -9,6 +9,7 @@
   ],
   "Organizational Units": "OrgUnitId",
   "Role Details": "RoleId",
+  "Rubric Assessment": "AssessmentId",
   "Session History": "HistoryId",
   "User Enrollments": [
     "OrgUnitId",
