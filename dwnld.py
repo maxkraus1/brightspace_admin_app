@@ -12,6 +12,8 @@ import os
 import requests
 import sys
 import zipfile
+
+import auth
 import report
 
 dir = os.path.dirname(__file__)  # directory for scritps
