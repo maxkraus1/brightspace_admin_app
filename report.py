@@ -78,10 +78,11 @@ def rubric_assessments(filename, assessments, rubrics_data):
             body += "<br />"
         # error handling for blank rubrics
         if body != "":
-            story.append(Paragraph(data['Name'], styles["h2"]))
+            story.append(Paragraph(data["Name"], styles["h2"]))
+            if "GradeObjectName" in rubric.keys():
+                heading += "Grade Object Name: {}<br />".format(rubric["GradeObjectName"])
             if no_overall == 0:
-                heading += "Overall Level: {}<br />".format(
-                                                        overall_level["Name"])
+                heading += "Overall Level: {}<br />".format(overall_level["Name"])
                 heading += "Overall Score: {}<br />".format(overall_score)
                 if overall_feedback != '':
                     heading += "Overall Feedback: {}<br />".format(
