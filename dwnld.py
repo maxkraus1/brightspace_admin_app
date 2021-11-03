@@ -247,6 +247,13 @@ def put_course_info(orgUnitId, json_data):
     response = requests.put(url, headers=HEADERS, json=json_data)
     code_log(response, "PUT course offering info org unit {}".format(orgUnitId))
 
+def enroll(orgUnitId, userId, roleId, isCascading=False):
+    """enrolls a user in the org unit"""
+    url = DOMAIN + "/lp/{}/enrollments/".format(LP_VERSION)
+    data = {"OrgUnitId": orgUnitId,"UserId": userId,"RoleId": roleId,"IsCascading": isCascading}
+    response = requests.post(url, headers=HEADERS, json=data)
+    code_log(response, "POST enroll user {} to org unit {}".format(userId, orgUnitId))
+
 # complex functions below here
 def get_files(orgUnitId, keyphrase, path):
     """Creates a Rubric Assessment file and downloads the submitted file."""
