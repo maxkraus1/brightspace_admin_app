@@ -1,0 +1,42 @@
+<body style="font-family: Helvetica, sans-serif; text-align: center;">
+<div id="process-selector" style="font-size: 24; padding-top: 20px; padding-bottom: 20px;">
+  <p>Select a process to complete:</p>
+  <select name="selected_process" id="selected_process" style="font-size: 24;">
+    <option value="" selected></option>
+    {% for process in processes %}
+      <option value="{{process}}">{{process}}</option>
+    {% endfor %}
+  </select>
+</div>
+<hr>
+<!-- Semester Report Form -->
+<div id="SemesterReport" class="ProcessOptions">
+<p>Run a Semester Report</p>
+<form action="/data" method = "POST">
+    <p>Semester Code <input type="text" name="SemesterCode" /></p>
+    <p><input type="submit" value="Submit" /></p>
+</form>
+</div>
+
+<!-- Grades Report Form -->
+<div id="GradesReport" class="ProcessOptions">
+<p>Run a Grades Report</p>
+<form action="/grades_report" method = "POST">
+    <p>Enter Course Org Unit Id: <input type="text" name="OrgUnitId" /></p>
+    <p><input type="submit" value="Submit" /></p>
+</form>
+</div>
+
+<!-- JavaScript to show/hide forms -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type = "text/javascript">
+  $('.ProcessOptions').hide();
+  $('#selected_process').on('change', function() {
+    $('.ProcessOptions').hide();
+    let selected = $( "#selected_process option:selected" ).text();
+    let selected_id = '#' + selected.replace(/\s+/g, "")
+    console.log(selected_id)
+    $(selected_id).show();
+});
+</script>
+</body>
