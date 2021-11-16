@@ -22,6 +22,7 @@ parser.add_argument('--pdf', action='store_true',
                     help='output PDF report instead of Excel')
 parser.add_argument('--dept', action='store_true',
                     help='pull report for whole department')
+parser.add_argument('--org', type=int, help='bypass inputs to call from web app')
 args = parser.parse_args()
 
 # define main function with methods for Excel and PDF formats
@@ -100,7 +101,10 @@ if __name__ == '__main__':
             main(ou, report_path)
 
     else:  # default report for just one course
-        ou = input('enter course org unit number: ')
+        if args.org:
+            ou = args.org
+        else:
+            ou = input('enter course org unit number: ')
         report_path = datahub.REPORT_PATH
         main(ou, datahub.REPORT_PATH)
 
