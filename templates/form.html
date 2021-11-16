@@ -1,4 +1,4 @@
-<body style="font-family: Helvetica, sans-serif; text-align: center;">
+<body style="font-family: Lato, sans-serif; text-align: center;">
 <div id="process-selector" style="font-size: 24; padding-top: 20px; padding-bottom: 20px;">
   <p>Select a process to complete:</p>
   <select name="selected_process" id="selected_process" style="font-size: 24;">
@@ -13,7 +13,7 @@
 <div id="SemesterReport" class="ProcessOptions">
 <p>Run a Semester Report</p>
 <form action="/data" method = "POST">
-    <p>Semester Code <input type="text" name="SemesterCode" /></p>
+    <p>Semester Code: <input type="text" name="SemesterCode" /></p>
     <p><input type="submit" value="Submit" /></p>
 </form>
 </div>
@@ -23,6 +23,18 @@
 <p>Run a Grades Report</p>
 <form action="/grades_report" method = "POST">
     <p>Enter Course Org Unit Id: <input type="text" name="OrgUnitId" /></p>
+    <p><input type="submit" value="Submit" /></p>
+</form>
+</div>
+
+<!-- Bulk Enroll Department Staff Form -->
+<div id="BulkEnrollDepartmentStaff" class="ProcessOptions">
+<p>Enroll a user as department staff for all courses in a department and semester</p>
+<small>This process will exclude any courses the user is already enrolled in</small>
+<form action="/bulk_enroll" method = "POST">
+    <p>Enter Department Code: <input type="text" name="Department" placeholder='FASD' /></p>
+    <p>Enter Semester Code: <input type="text" name="Semester" placeholder='202210' /></p>
+    <p>Enter User Id: <input type="text" name="UserId" placeholder='X12345678' /></p>
     <p><input type="submit" value="Submit" /></p>
 </form>
 </div>

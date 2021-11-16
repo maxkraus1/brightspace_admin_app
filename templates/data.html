@@ -1,6 +1,8 @@
+<body style="font-family: Lato, sans-serif; text-align: center;">
 <p>Your Process was submitted successfully<p>
-<p><a href="/">Home</a></p>
+<p><b><a href="/">Home</a></b></p>
 {% for key,value in form_data.items() %}
-<h2> {{key}}</h2>
+<b> {{key}}<b>
 <p> {{value}}</p>
 {% endfor %}
+</body>

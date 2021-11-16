@@ -20,7 +20,7 @@ api.add_resource(Credentials, '/credentials')
 
 @app.route('/')
 def form():
-    processes = ['Semester Report', 'Grades Report']
+    processes = ['Semester Report', 'Grades Report', 'Bulk Enroll Department Staff']
     return render_template('form.html', processes=processes)
 
 @app.route('/data/', methods = ['POST', 'GET'])
@@ -38,6 +38,14 @@ def grades_report():
     os.system('python grades_report.py --org {}'.format(form_data['OrgUnitId']))
     return render_template('data.html',form_data = form_data)
 
+@app.route('/bulk_enroll/', methods=['POST'])
+def bulk_enroll():
+    form_data = request.form
+    os.system('python bulk_enroll_dept.py --dept {} --sem {} --id {}'.format(
+                                                                        form_data['Department'],
+                                                                        form_data['Semester'],
+                                                                        form_data['UserId']))
+    return render_template('data.html', form_data=form_data)
 if __name__ == '__main__':
     # import webbrowser
     # webbrowser.open('http://localhost:5000')
