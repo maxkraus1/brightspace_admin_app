@@ -13,7 +13,7 @@
 <div id="SemesterReport" class="ProcessOptions">
 <p>Run a Semester Report</p>
 <form action="/data" method = "POST">
-    <p>Semester Code: <input type="text" name="SemesterCode" /></p>
+    <p>Semester Code: <input type="text" name="SemesterCode" placeholder="202210"/></p>
     <p><input type="submit" value="Submit" /></p>
 </form>
 </div>
@@ -22,7 +22,7 @@
 <div id="GradesReport" class="ProcessOptions">
 <p>Run a Grades Report</p>
 <form action="/grades_report" method = "POST">
-    <p>Enter Course Org Unit Id: <input type="text" name="OrgUnitId" /></p>
+    <p>Enter Course Org Unit Id: <input type="text" name="OrgUnitId" placeholder="10476"/></p>
     <p><input type="submit" value="Submit" /></p>
 </form>
 </div>
@@ -30,10 +30,20 @@
 <!-- Bulk Enroll Department Staff Form -->
 <div id="BulkEnrollDepartmentStaff" class="ProcessOptions">
 <p>Enroll a user as department staff for all courses in a department and semester</p>
-<small>This process will exclude any courses the user is already enrolled in</small>
+<small>This process will exclude any courses the user is already enrolled in, as well as any empty shells without a faculty of record</small>
 <form action="/bulk_enroll" method = "POST">
     <p>Enter Department Code: <input type="text" name="Department" placeholder='FASD' /></p>
     <p>Enter Semester Code: <input type="text" name="Semester" placeholder='202210' /></p>
+    <p>Enter User Id: <input type="text" name="UserId" placeholder='X12345678' /></p>
+    <p><input type="submit" value="Submit" /></p>
+</form>
+</div>
+
+<!-- Rubrics Report Form -->
+<div id="RubricsReport" class="ProcessOptions">
+<p>Run a report on all the rubrics for a student in a course</p>
+<form action="/rubrics" method = "POST">
+    <p>Enter Course Org Unit Id <input type="text" name="OrgUnitId" placeholder='10476' /></p>
     <p>Enter User Id: <input type="text" name="UserId" placeholder='X12345678' /></p>
     <p><input type="submit" value="Submit" /></p>
 </form>

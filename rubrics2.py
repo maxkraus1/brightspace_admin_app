@@ -15,7 +15,9 @@ import report
 def parse_args():
     """adds optional argument to run a bulk report"""
     parser = argparse.ArgumentParser()
-    parser.add_argument('--bulk', help='paste path to csv file with OrgUnitId and Xnumber columns')
+    parser.add_argument('--bulk', help='path to csv file with OrgUnitId and Xnumber columns')
+    parser.add_argument('--ou', help='course offering org unit id number', type=int)
+    parser.add_argument('--id', help='user org defined id')
     return parser.parse_args()
 
 def build_report(ou, xid, rub_assess_df):
@@ -57,8 +59,8 @@ def main():
             build_report(u.OrgUnitId, u.Xnumber, df)
 
     elif not args.bulk:
-        ou = input('Enter course OrgUnitId: ')
-        xid = input('Enter student X number: ')
+        ou = args.ou if args.ou else input('Enter course OrgUnitId: ')
+        xid = args.id if args.id else input('Enter student X number: ')
         df = df[df['OrgUnitId'] == int(ou)]
         build_report(ou, xid, df)
 
