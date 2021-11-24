@@ -1,4 +1,7 @@
-"""Provides an API endpoint at the localhost for communication with Postman"""
+"""Provides a local web browser interface for executing scripts
+
+Also provides an API endpoint to pull credentials into Postman
+"""
 
 import json
 import os
@@ -27,7 +30,8 @@ def form():
     processes =['Semester Report',
                 'Grades Report',
                 'Bulk Enroll Department Staff',
-                'Rubrics Report']
+                'Rubrics Report',
+                'Push First Day Info']
     return render_template('form.html', processes=processes)
 
 @app.route('/data/', methods = ['POST', 'GET'])
@@ -59,6 +63,13 @@ def bulk_enroll():
 def rubrics():
     form_data = request.form
     args = ['python', 'rubrics2.py', '--ou', form_data['OrgUnitId'], '--id',form_data['UserId']]
+    sp = subprocess.run(args=args, capture_output=True)
+    return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
+
+@app.route('/firstday/', methods=['POST'])
+def firstday():
+    form_data = request.form
+    args = ['python', 'firstday.py', form_data['SemesterCode'], '--nocheck']
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
 

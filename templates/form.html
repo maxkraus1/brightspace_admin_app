@@ -55,7 +55,18 @@
     <p><input type="submit" value="Submit" /></p>
 </form>
 </div>
+
+<!-- First Day Information Form -->
+<div id="PushFirstDayInfo" class="ProcessOptions">
+<h2>Push the default First Day Information and Syllabus units into every course in a semester</h2>
+<form action="/firstday" method = "POST">
+    <p>Enter Semester Code<br /><input type="text" name="SemesterCode" placeholder='202210' required/></p>
+    <p><input type="submit" value="Submit" /></p>
+</form>
 </div>
+</div>
+
+<!-- Wait message to show after submitting a form -->
 <div id="waitmsg" hidden>
 <p style="color: red;">Please wait, your process is running...</p>
 </div>

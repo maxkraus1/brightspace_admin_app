@@ -8,6 +8,7 @@ The template (copy-from) course Org Unit Id is 10646.
 Provide the Otis Semester Code as command line argument 1.
 """
 
+import argparse
 import csv
 import sys
 
@@ -16,6 +17,11 @@ import dwnld
 
 DATA_PATH = "G:/Shared drives/~ LMS Brightspace Implementation/Data Hub"
 sourceId = 10646
+
+parser = argparse.ArgumentParser()
+parser.add_argument('semester', help="Otis semester code (i.e. '202210')")
+parser.add_argument('--nocheck', action='store_true', help='Prevents input for user to confirm before copying')
+args = parser.parse_args()
 
 def runner(idlist):
     """copies the First Day Information module to each course in idlist
@@ -32,7 +38,7 @@ def runner(idlist):
             copylist.append(id)
     if copylist:
         print("There are {} courses without a First Day Information Unit".format(len(copylist)))
-        copy = input("Would you like to copy? (Y/N): ")
+        copy = 'y' if args.nocheck else input("Would you like to copy? (Y/N): ")
         if copy.lower() in ("y", "yes"):
             for id in copylist:
                 dwnld.course_copy(id, sourceId, ['Content', 'CourseFiles'])
@@ -63,6 +69,6 @@ def mklist(semesterId):
     return idlist
 
 if __name__ == "__main__":
-    semesterId = datahub.get_orgunit(sys.argv[1])
+    semesterId = datahub.get_orgunit(args.semester)
     idlist = mklist(semesterId)
     runner(idlist)
