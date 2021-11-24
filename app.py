@@ -2,6 +2,7 @@
 
 import json
 import os
+import subprocess
 
 from flask import Flask, render_template, request
 from flask_restful import Resource, Api, reqparse
@@ -18,6 +19,9 @@ class Credentials(Resource):
 
 api.add_resource(Credentials, '/credentials')
 
+def out_format(std_out):  # helper function to format shell output
+    return [str(line, 'utf-8', 'ignore') for line in std_out.split(b'\r\n')]
+
 @app.route('/')
 def form():
     processes =['Semester Report',
@@ -32,8 +36,9 @@ def data():
         return f"The URL /data is accessed directly. Try going to '/' to submit form"
     if request.method == 'POST':
         form_data = request.form
-        os.system('python semester_report.py {}'.format(form_data['SemesterCode']))
-        return render_template('data.html',form_data = form_data)
+        args = ['python',  'semester_report.py', form_data['SemesterCode']]
+        sp = subprocess.run(args=args, capture_output=True)
+        return render_template('data.html',form_data=form_data, out=out_format(sp.stdout))
 
 @app.route('/grades_report/', methods=['POST'])
 def grades_report():
@@ -53,9 +58,9 @@ def bulk_enroll():
 @app.route('/rubrics/', methods=['POST'])
 def rubrics():
     form_data = request.form
-    os.system('python rubrics2.py --ou {} --id {}'.format(  form_data['OrgUnitId'],
-                                                            form_data['UserId']))
-    return render_template('data.html', form_data=form_data)
+    args = ['python', 'rubrics2.py', '--ou', form_data['OrgUnitId'], '--id',form_data['UserId']]
+    sp = subprocess.run(args=args, capture_output=True)
+    return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
 
 if __name__ == '__main__':
     # import webbrowser

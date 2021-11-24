@@ -1,0 +1,89 @@
+body {
+  text-align: center;
+  font-family: Lato, sans-serif;
+}
+
+input[type=text] {
+  border: none;
+  border-bottom: 2px solid blue;
+  padding: 10px 5px 5px 5px;
+}
+
+input[type=text]:focus {
+  border-color:#333;
+}
+
+input[type=submit] {
+  padding:5px 15px;
+  background:#ccc;
+  border:0 none;
+  cursor:pointer;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+
+input {
+  font-size: 16;
+}
+
+select {
+  font-size: 16;
+  font-weight: 500;
+  padding: 10px 10px;
+  border: 0;
+  background-color: #F0F0F0;
+}
+
+h1 {
+  font-size: 24;
+  font-weight: 300;
+  padding-top: 10px;
+}
+
+h2 {
+  font-size: 20;
+  font-weight: 500;
+}
+
+hr {
+  border: 0;
+  border-top: 2px solid #D1D1D1;
+}
+
+.form {
+  margin-left: 35%;
+  margin-right: 35%;
+}
+
+.data_hr {
+  border: 0;
+  border-top: 5px dashed green;
+  width: 50%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.ProcessOptions {
+  text-align: left;
+}
+
+.output {
+  text-align: left;
+  margin-left: 25%;
+}
+
+#waitmsg
+{
+  position:fixed;
+  padding:0;
+  margin:0;
+
+  top:0;
+  left:0;
+
+  width: 100%;
+  height: 100%;
+  background:rgba(255,255,255,0.75);
+
+  font-size: 24;
+}

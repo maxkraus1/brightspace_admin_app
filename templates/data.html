@@ -1,23 +1,29 @@
-<style type="text/css">
-  hr {
-    border: 0;
-    border-top: 5px dashed green;
-    width: 50%;
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-</style>
-<body style="font-family: Lato, sans-serif; text-align: center;">
-<p>Your process was submitted successfully<p>
-<hr />
+<! DOCTYPE HTML>
+<html>
+<head>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+</head>
+<body>
+<h1>Your process was submitted successfully</h1>
+<hr class="data_hr"/>
 <p>More actions:</p>
 <b>
 <p><a href="/">Run another process</a></p>
 <p><a href="https://drive.google.com/drive/folders/10_Cuknzzs9YKmK5rJlHEBS3f0ba5k80Z?usp=sharing" target="_blank">View any reports</a></p>
 </b>
-<hr />
+<hr class="data_hr"/>
 <p>Data Submitted:</p>
 {% for key,value in form_data.items() %}
 <p><b>{{key}}:</b> {{value}}</p>
 {% endfor %}
+<hr class="data_hr"/>
+<h2>Output</h2>
+<div class=output>
+<p>
+{% for line in out %}
+{{line}}<br />
+{% endfor %}
+</p>
+</div>
 </body>
+</html>

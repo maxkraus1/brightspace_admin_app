@@ -1,8 +1,15 @@
-<body style="font-family: Lato, sans-serif; text-align: center;">
+<! doctype html>
+<html>
+<head>
+  <title>Home - TLC Nest Admin</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+</head>
+<body>
+<div class="form">
 <div id="process-selector" style="font-size: 24; padding-top: 20px; padding-bottom: 20px;">
-  <p>Select a process to complete:</p>
-  <select name="selected_process" id="selected_process" style="font-size: 24;">
-    <option value="" selected></option>
+  <h1>Select a process to complete:</h1>
+  <select name="selected_process" id="selected_process">
+    <option value="" selected>-- select an option --</option>
     {% for process in processes %}
       <option value="{{process}}">{{process}}</option>
     {% endfor %}
@@ -11,44 +18,47 @@
 <hr>
 <!-- Semester Report Form -->
 <div id="SemesterReport" class="ProcessOptions">
-<p>Run a Semester Report</p>
+<h2>Run a Semester Report</h2>
 <form action="/data" method = "POST">
-    <p>Semester Code: <input type="text" name="SemesterCode" placeholder="202210"/></p>
+    <p>Semester Code:<br /><input type="text" name="SemesterCode" placeholder="202210" required /></p>
     <p><input type="submit" value="Submit" /></p>
 </form>
 </div>
 
 <!-- Grades Report Form -->
 <div id="GradesReport" class="ProcessOptions">
-<p>Run a Grades Report</p>
+<h2>Run a Grades Report</h2>
 <form action="/grades_report" method = "POST">
-    <p>Enter Course Org Unit Id: <input type="text" name="OrgUnitId" placeholder="10476"/></p>
+    <p>Enter Course Org Unit Id:<br /><input type="text" name="OrgUnitId" placeholder="10476" required/></p>
     <p><input type="submit" value="Submit" /></p>
 </form>
 </div>
 
 <!-- Bulk Enroll Department Staff Form -->
 <div id="BulkEnrollDepartmentStaff" class="ProcessOptions">
-<p>Enroll a user as department staff for all courses in a department and semester</p>
+<h2>Enroll a user as department staff for all courses in a department and semester</h2>
 <small>This process will exclude any courses the user is already enrolled in, as well as any empty shells without a faculty of record</small>
 <form action="/bulk_enroll" method = "POST">
-    <p>Enter Department Code: <input type="text" name="Department" placeholder='FASD' /></p>
-    <p>Enter Semester Code: <input type="text" name="Semester" placeholder='202210' /></p>
-    <p>Enter User Id: <input type="text" name="UserId" placeholder='X12345678' /></p>
+    <p>Enter Department Code: <br /><input type="text" name="Department" placeholder='FASD' required/></p>
+    <p>Enter Semester Code:<br /><input type="text" name="Semester" placeholder='202210' required/></p>
+    <p>Enter User Id:<br /><input type="text" name="UserId" placeholder='X12345678' required/></p>
     <p><input type="submit" value="Submit" /></p>
 </form>
 </div>
 
 <!-- Rubrics Report Form -->
 <div id="RubricsReport" class="ProcessOptions">
-<p>Run a report on all the rubrics for a student in a course</p>
+<h2>Run a report on all the rubrics for a student in a course</h2>
 <form action="/rubrics" method = "POST">
-    <p>Enter Course Org Unit Id <input type="text" name="OrgUnitId" placeholder='10476' /></p>
-    <p>Enter User Id: <input type="text" name="UserId" placeholder='X12345678' /></p>
+    <p>Enter Course Org Unit Id<br /><input type="text" name="OrgUnitId" placeholder='10476' required/></p>
+    <p>Enter User Id:<br /> <input type="text" name="UserId" placeholder='X12345678' required/></p>
     <p><input type="submit" value="Submit" /></p>
 </form>
 </div>
-
+</div>
+<div id="waitmsg" hidden>
+<p style="color: red;">Please wait, your process is running...</p>
+</div>
 <!-- JavaScript to show/hide forms -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script type = "text/javascript">
@@ -59,6 +69,11 @@
     let selected_id = '#' + selected.replace(/\s+/g, "")
     console.log(selected_id)
     $(selected_id).show();
-});
+  });
+  $('form').submit(function() {
+    $(':submit').attr('disabled', true);
+    $('#waitmsg').show();
+  });
 </script>
 </body>
+</html>
