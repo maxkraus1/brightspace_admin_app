@@ -1,35 +1,50 @@
-"""Retrieves the Roster for each class in a csv file and outputs an Excel file
+"""Retrieves the Roster for each class and outputs an Excel file
 
-Takes the semester code as argument 1 and department code as argument 2
+Choose to supply department/semester codes (--dept and --sem) OR
+a csv file (--csv) to select the courses to be included in the report
 """
 
+import argparse
 import csv
 import re
 import os
-import sys
 
 import pandas as pd
 
 import datahub
 import dwnld
 
-semester, department = sys.argv[1], sys.argv[2]
 path = "G:/Shared drives/~ LMS Brightspace Implementation/Data Hub"
-filename = os.path.join(datahub.REPORT_PATH,"{}_{}_Enrollment".format(
-                                                        semester, department))
 role_details = datahub.ROLE_DETAILS
-sem_ou = datahub.get_orgunit(semester)
-dept_ou = datahub.get_orgunit(department)
+
+# add arguments for differnt course selecting options
+parser = argparse.ArgumentParser()
+parser.add_argument('--sem', help='semester code')
+parser.add_argument('--dept', help='department code')
+parser.add_argument('--csv', help='csv file with OrgUnitId, Name and Code as columns')
+args = parser.parse_args()
+
+# set variables depending on args
+if args.sem and args.dept:
+    sem, dept = args.sem, args.dept
+    sem_ou = datahub.get_orgunit(semester)
+    dept_ou = datahub.get_orgunit(department)
+    courses = datahub.dept_sheet(datahub.get_descendants(dept_ou, sem_ou))[0]
+    filename = os.path.join(datahub.REPORT_PATH,"{}_{}_Rosters".format(sem,dept))
+elif args.csv:
+    df = pd.read_csv(args.csv, dtype=str)
+    courses = df.to_dict('records')
+    filename = os.path.join(datahub.REPORT_PATH,"{}_Rosters".format(os.path.basename(args.csv)[:-4]))
+else:  # raise error if no arguments are supplied
+    raise argparse.ArgumentError('Either --sem and --dept or --csv must be provided')
 
 writer = pd.ExcelWriter(filename + ".xlsx")
 workbook = writer.book
 title_format = workbook.add_format({"bold": True,
                                 "font_color": "#4D9C34",
                                 "font_size": 16})
-
-courses = datahub.dept_sheet(datahub.get_descendants(dept_ou, sem_ou))
-
-for row in courses[0]:
+# build report
+for row in courses:
     roster = dwnld.get_classlist(row["OrgUnitId"])
     for user in roster:
         user["Role"] = datahub.get_role(user["RoleId"])
