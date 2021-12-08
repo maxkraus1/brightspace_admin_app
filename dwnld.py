@@ -92,6 +92,12 @@ def get_file(orgUnitId, folderId, submissionId, fileId, path):
     code_log(response, "GET File orgUnitId({})".format(orgUnitId))
     dwnld_stream(response, path)
 
+def get_file_url(url, path):
+    """Downloads a file from a direct URL to the path"""
+    response = requests.get(url, headers=HEADERS, stream=True)
+    code_log(response, "GET File from url {}".format(url))
+    dwnld_stream(response, path)
+
 def get_rubrics(orgUnitId, objectType, objectId):
     """Retrives a JSON arrary of Rubric blocks and returns a list of dicts"""
     url = DOMAIN + "/le/unstable/{}/rubrics".format(orgUnitId)
