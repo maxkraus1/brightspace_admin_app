@@ -53,11 +53,9 @@ def grades_report():
 @app.route('/bulk_enroll/', methods=['POST'])
 def bulk_enroll():
     form_data = request.form
-    os.system('python bulk_enroll_dept.py --dept {} --sem {} --id {}'.format(
-                                                                        form_data['Department'],
-                                                                        form_data['Semester'],
-                                                                        form_data['UserId']))
-    return render_template('data.html', form_data=form_data)
+    args = ['python', 'bulk_enroll_dept.py', form_data['Department'], form_data['Semester'], form_data['UserId']]
+    sp = subprocess.run(args=args, capture_output=True)
+    return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
 
 @app.route('/rubrics/', methods=['POST'])
 def rubrics():

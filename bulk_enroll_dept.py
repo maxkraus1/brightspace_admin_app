@@ -8,10 +8,10 @@ import datahub
 import dwnld
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dept', type=str, help='department code', required=True)
-parser.add_argument('--sem', type=int, help='semester code', required=True)
-parser.add_argument('--id', type=str, help='user id (LMS Org Defined Id)', required=True)
-parser.add_argument('--role', type=str, help='role id')
+parser.add_argument('dept', type=str, help='department code')
+parser.add_argument('sem', type=int, help='semester code')
+parser.add_argument('id', type=str, help='user id (LMS Org Defined Id)')
+parser.add_argument('--role', type=str, help='role id (default is 122 for Department Staff)')
 args = parser.parse_args()
 
 user = datahub.get_user(args.id)
