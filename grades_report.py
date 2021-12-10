@@ -20,9 +20,9 @@ import report
 parser = argparse.ArgumentParser(add_help=True)
 parser.add_argument('--pdf', action='store_true',
                     help='output PDF report instead of Excel')
-parser.add_argument('--dept', action='store_true',
-                    help='pull report for whole department')
-parser.add_argument('--org', type=int, help='bypass inputs to call from web app')
+parser.add_argument('--dept', nargs=2,
+                    help='pull report for whole department--supply department then semester code')
+parser.add_argument('--org', type=int, help='org unit id for a single course')
 args = parser.parse_args()
 
 # define main function with methods for Excel and PDF formats
@@ -85,8 +85,7 @@ def valid_semester_orgunits(dept_code, sem_code):
 if __name__ == '__main__':
 
     if args.dept:  # check if --dept arg was provided
-        dept_code = input("Enter department code: ")
-        sem_code = input("Enter semester code: ")
+        dept_code, sem_code = args.dept[0], args.dept[1]
         course_org_units = valid_semester_orgunits(dept_code, sem_code)
         report_path = os.path.join(
                                     datahub.REPORT_PATH,

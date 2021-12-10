@@ -29,6 +29,7 @@ def out_format(std_out):  # helper function to format shell output
 def form():
     processes =['Semester Report',
                 'Grades Report',
+                'Grades Report Department',
                 'Bulk Enroll Department Staff',
                 'Rubrics Report',
                 'Push First Day Info']
@@ -47,8 +48,16 @@ def data():
 @app.route('/grades_report/', methods=['POST'])
 def grades_report():
     form_data = request.form
-    os.system('python grades_report.py --org {}'.format(form_data['OrgUnitId']))
-    return render_template('data.html',form_data = form_data)
+    args = ['python', 'grades_report.py', '--org', form_data['OrgUnitId']]
+    sp = subprocess.run(args=args, capture_output=True)
+    return render_template('data.html',form_data = form_data, out=out_format(sp.stdout))
+
+@app.route('/grades_report_dept/', methods=['POST'])
+def grades_report_dept():
+    form_data = request.form
+    args = ['python', 'grades_report.py', '--dept', form_data['DepartmentCode'], form_data['SemesterCode']]
+    sp = subprocess.run(args=args, capture_output=True)
+    return render_template('data.html',form_data = form_data, out=out_format(sp.stdout))
 
 @app.route('/bulk_enroll/', methods=['POST'])
 def bulk_enroll():

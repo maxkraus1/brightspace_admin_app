@@ -1,4 +1,4 @@
-<! doctype html>
+<!DOCTYPE HTML>
 <html>
 <head>
   <title>Home - TLC Nest Admin</title>
@@ -27,9 +27,19 @@
 
 <!-- Grades Report Form -->
 <div id="GradesReport" class="ProcessOptions">
-<h2>Run a Grades Report</h2>
+<h2>Run a Grades Report for one course</h2>
 <form action="/grades_report" method = "POST">
     <p>Enter Course Org Unit Id:<br /><input type="text" name="OrgUnitId" placeholder="10476" required/></p>
+    <p><input type="submit" value="Submit" /></p>
+</form>
+</div>
+
+<!-- Grades Report Department Form -->
+<div id="GradesReportDepartment" class="ProcessOptions">
+<h2>Run a Grades Report for all courses in a department</h2>
+<form action="/grades_report_dept" method = "POST">
+    <p>Enter Department Code<br /><input type="text" name="DepartmentCode" placeholder="FASD" required/></p>
+    <p>Enter Semester Code<br /><input type="text" name="SemesterCode" placeholder="202130" required/></p>
     <p><input type="submit" value="Submit" /></p>
 </form>
 </div>
