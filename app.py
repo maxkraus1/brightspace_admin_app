@@ -32,7 +32,8 @@ def form():
                 'Grades Report Department',
                 'Bulk Enroll Department Staff',
                 'Rubrics Report',
-                'Push First Day Info']
+                'Push First Day Info'
+                ]
     return render_template('form.html', processes=processes)
 
 @app.route('/data/', methods = ['POST', 'GET'])
