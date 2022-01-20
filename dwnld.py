@@ -94,7 +94,7 @@ def get_file(orgUnitId, folderId, submissionId, fileId, path):
 
 def get_file_url(url, path):
     """Downloads a file from a direct URL to the path"""
-    response = requests.get(url, headers=HEADERS, stream=True)
+    response = requests.get(url, headers=HEADERS, params={"stream": True}, stream=True)
     code_log(response, "GET File from url {}".format(url))
     dwnld_stream(response, path)
 
