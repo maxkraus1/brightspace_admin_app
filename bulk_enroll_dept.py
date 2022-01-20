@@ -30,5 +30,12 @@ if args.role:
 else:
     role = 122  # default role is Department Staff
 
+fails = []
 for ou in df['OrgUnitId'].to_list():
-    dwnld.enroll(ou, user['UserId'], role)
+    try:
+        dwnld.enroll(ou, user['UserId'], role)
+    except:
+        fails.append(ou)
+
+if fails:
+    print("The following org unit enrollments failed: ", fails)
