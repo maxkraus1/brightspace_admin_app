@@ -32,7 +32,7 @@ def runner(idlist):
         data = dwnld.get_toc(id)
         first_day = []
         for module in data['Modules']:
-            if module['Title'] == 'First Day Information':
+            if 'First Day Information' in module['Title']:
                 first_day.append(module)
         if not first_day:
             copylist.append(id)
@@ -58,14 +58,14 @@ def mklist(semesterId):
         reader = csv.DictReader(csvfile)
         firstdaylist = []
         for row in reader:
-            if row['Title'] == 'First Day Information':
+            if 'First Day Information' in row['Title']:
                 firstdaylist.append(row['OrgUnitId'])
     idlist = []
     for i in childlist:
         if i not in firstdaylist:
-            status = dwnld.get_copy_logs({"sourceOrgUnitId": sourceId,"destinationOrgUnitId": i})
-            if status == 404: # make sure default was not deleted by instructor
-                idlist.append(i)
+            # status = dwnld.get_copy_logs({"sourceOrgUnitId": sourceId,"destinationOrgUnitId": i})
+            # if status == 404: # make sure default was not deleted by instructor
+            idlist.append(i)
     return idlist
 
 if __name__ == "__main__":
