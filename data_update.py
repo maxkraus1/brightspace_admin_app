@@ -20,6 +20,10 @@ def composite(df, pk):
         df["PrimaryKey"] = df[pk[0]].apply(str) + "_" + df[pk[1]].apply(str)
         pk = "PrimaryKey"
     df.set_index(pk, inplace=True)
+    if df.index.is_unique == False:  # error handling for duplicate PK values
+        print("Duplicate Values found: ", df.index.duplicated())
+        df = df.loc[~df.index.duplicated(), :]
+    df.flags.allows_duplicate_labels = False
     return df
 
 def main():
@@ -28,6 +32,7 @@ def main():
     to_download = [i for i in exports if i['Name'] in data_sets.keys()]
     to_update = [e for e in exports if e['Name'] in diffs]
     for item in to_download:
+        print("Data Set: ", item['Name'])
         pk = data_sets[item['Name']]  # define primary key
         csvfile = dwnld.get_dataset_csv(item['DownloadLink'], DATA_PATH)
         full_date = item['CreatedDate']
