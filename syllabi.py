@@ -32,16 +32,29 @@ for index, course in df.iterrows():
         toc = dwnld.get_toc(course['OrgUnitId'])
         classlist = dwnld.get_classlist(course['OrgUnitId'])
         lastnames = [u['LastName'] for u in classlist if u['RoleId'] == 109]
+
         try:
             module = next(m for m in toc['Modules'] if "syllabus" in m['Title'].lower())
+            if len(module['Description']["Html"]) > 100:
+                description = os.path.join( args.destination,
+                                            "{}_{}_{}".format(  re.sub(r'[^\d\w \-_]+', '_', course['Name']),
+                                                                '_'.join(lastnames),
+                                                                "0.html")
+                                            )
+                with open(description, "w") as outfile:
+                    outfile.write(module['Description']["Html"])
+            count = 1
             for topic in [t for t in module['Topics'] if t['ActivityType'] == 1]:
-                filename = re.sub(r'[^\d\w \-_]+', '_', course['Name']) + '_' + '_'.join(lastnames) + '_' + os.path.basename(topic['Url'])
+                filename = "{}_{}_{}_{}".format(re.sub(r'[^\d\w \-_]+', '_', course['Name']),
+                                                '_'.join(lastnames),
+                                                count,
+                                                os.path.basename(topic['Url']))
                 filepath = os.path.join(args.destination, filename)
-                # if topic['Url'][-4:] == 'html':
-                url = dwnld.DOMAIN + '/le/{}/{}/content/topics/{}/file'.format(dwnld.LE_VERSION, course['OrgUnitId'], topic['TopicId'])
-                # else:
-                #    url = 'https://lms.otis.edu' + topic['Url']
+                url = dwnld.DOMAIN + '/le/{}/{}/content/topics/{}/file'.format( dwnld.LE_VERSION,
+                                                                                course['OrgUnitId'],
+                                                                                topic['TopicId'])
                 dwnld.get_file_url(url, filepath)
+                count += 1
         except StopIteration as e:
             print('No Syllabus: {} {}'.format(course['Name'], course['OrgUnitId']))
             print(e)
