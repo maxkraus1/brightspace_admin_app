@@ -43,7 +43,7 @@ if no_course:
         print(row["Code"] + " " + row["Name"])
 
 if downloaded:
-    print("Evidence downloaded to:"
+    print("Evidence downloaded to:")
     for d in sorted(list(set(downloaded))):
         print(d)
 else:
