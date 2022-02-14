@@ -15,12 +15,12 @@ import sys
 import datahub
 import dwnld
 
-DATA_PATH = "G:/Shared drives/~ LMS Brightspace Implementation/Data Hub"
 sourceId = 10646
 
 parser = argparse.ArgumentParser()
 parser.add_argument('semester', help="Otis semester code (i.e. '202210')")
 parser.add_argument('--nocheck', action='store_true', help='Prevents input for user to confirm before copying')
+parser.add_argument('--nopast', action='store_true', help='Suppresses check for past copies to a course before copying')
 args = parser.parse_args()
 
 def runner(idlist):
@@ -52,7 +52,7 @@ def mklist(semesterId):
     and do not have a First Day Information module
     """
     children = dwnld.get_children(semesterId, ouTypeId=3)
-    contentobjects = DATA_PATH + "/Data Sets/ContentObjects.csv"
+    contentobjects = datahub.CONTENT_OBJECTS
     childlist = [i['Identifier'] for i in children]
     with open(contentobjects, newline='', encoding='utf-8-sig') as csvfile:
         reader = csv.DictReader(csvfile)
@@ -63,9 +63,12 @@ def mklist(semesterId):
     idlist = []
     for i in childlist:
         if i not in firstdaylist:
-            # status = dwnld.get_copy_logs({"sourceOrgUnitId": sourceId,"destinationOrgUnitId": i})
-            # if status == 404: # make sure default was not deleted by instructor
-            idlist.append(i)
+            if args.nopast == False:
+                status = dwnld.get_copy_logs({"sourceOrgUnitId": sourceId,"destinationOrgUnitId": i})
+                if status == 404: # make sure default was not deleted by instructor
+                    idlist.append(i)
+            else:
+                idlist.append(i)
     return idlist
 
 if __name__ == "__main__":
