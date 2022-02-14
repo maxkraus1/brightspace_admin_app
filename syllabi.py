@@ -34,8 +34,8 @@ for index, course in df.iterrows():
         lastnames = [u['LastName'] for u in classlist if u['RoleId'] == 109]
 
         try:
-            module = next(m for m in toc['Modules'] if "syllabus" in m['Title'].lower())
-            if len(module['Description']["Html"]) > 100:
+            module = next(m for m in toc['Modules'] if "syllabus" in m['Title'].lower() and m['IsHidden'] == False)
+            if len(module['Description']["Html"]) > 50:
                 description = os.path.join( args.destination,
                                             "{}_{}_{}".format(  re.sub(r'[^\d\w \-_]+', '_', course['Name']),
                                                                 '_'.join(lastnames),
@@ -44,7 +44,7 @@ for index, course in df.iterrows():
                 with open(description, "w") as outfile:
                     outfile.write(module['Description']["Html"])
             count = 1
-            for topic in [t for t in module['Topics'] if t['ActivityType'] == 1]:
+            for topic in [t for t in module['Topics'] if t['ActivityType'] == 1 and t['IsHidden'] == False]:
                 filename = "{}_{}_{}_{}".format(re.sub(r'[^\d\w \-_]+', '_', course['Name']),
                                                 '_'.join(lastnames),
                                                 count,
