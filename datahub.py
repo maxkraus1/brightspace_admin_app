@@ -1,16 +1,17 @@
 """Functions to support scripts utilizing Data Hub CSV tables"""
 
 from collections import Counter
-import csv
+import csv, json
 import os
 import re
 
 import pandas as pd
 
-DATA_PATH = \
-"G:/Shared drives/~ LMS Brightspace Implementation/Data Hub/Data Sets/"
-REPORT_PATH = \
-"G:/Shared drives/~ LMS Brightspace Implementation/Data Hub/Reports/"
+# load directory paths from paths.json file
+with open(os.path.join(os.path.dirname(__file__), "paths.json")) as paths_json:
+    paths = json.load(paths_json)
+DATA_PATH = paths['DataPath']
+REPORT_PATH = paths['ReportPath']
 
 ASSIGNMENT_SUMMARY = DATA_PATH + "AssignmentSummary.csv"
 CONTENT_OBJECTS = DATA_PATH + "ContentObjects.csv"
