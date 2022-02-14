@@ -14,7 +14,7 @@ role = "110" if role_input == "1" else "109"
 role_name = "Students" if role == "110" else "Faculty"
 
 sem = datahub.get_orgunit(semester)
-dept = 6606 if department == 0 else datahub.get_orgunit(department)
+dept = 6606 if department == '0' else datahub.get_orgunit(department)
 descendants = datahub.get_descendants(sem, dept)
 
 print("Finding enrollments...")
