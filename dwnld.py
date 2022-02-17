@@ -267,7 +267,7 @@ def get_files(orgUnitId, keyphrase, path):
     if folderIds == []:
         return "No Dropbox folders match the keyphrase!"
     for folder in folderIds:
-        submission_data = get_submissions(orgUnitId, folderId)
+        submission_data = get_submissions(orgUnitId, folder['folderId'])
         grades_data = None
         if folder["GradeItemId"]:
             grades_data = get_item_grades(orgUnitId, folder["GradeItemId"])
