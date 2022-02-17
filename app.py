@@ -5,6 +5,7 @@ Also provides an API endpoint to pull credentials into Postman
 
 import json
 import os
+import platform
 import subprocess
 
 from flask import Flask, render_template, request
@@ -12,6 +13,8 @@ from flask_restful import Resource, Api, reqparse
 
 app = Flask(__name__)
 api = Api(app)
+
+call_py = 'py' if platform.system() == 'Windows' else 'python3'  # find cmd for python3
 
 class Credentials(Resource):
     def get(self):
@@ -42,42 +45,42 @@ def data():
         return f"The URL /data is accessed directly. Try going to '/' to submit form"
     if request.method == 'POST':
         form_data = request.form
-        args = ['python',  'semester_report.py', form_data['SemesterCode']]
+        args = [call_py,  'semester_report.py', form_data['SemesterCode']]
         sp = subprocess.run(args=args, capture_output=True)
         return render_template('data.html',form_data=form_data, out=out_format(sp.stdout))
 
 @app.route('/grades_report/', methods=['POST'])
 def grades_report():
     form_data = request.form
-    args = ['python', 'grades_report.py', '--org', form_data['OrgUnitId']]
+    args = [call_py, 'grades_report.py', '--org', form_data['OrgUnitId']]
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html',form_data = form_data, out=out_format(sp.stdout))
 
 @app.route('/grades_report_dept/', methods=['POST'])
 def grades_report_dept():
     form_data = request.form
-    args = ['python', 'grades_report.py', '--dept', form_data['DepartmentCode'], form_data['SemesterCode']]
+    args = [call_py, 'grades_report.py', '--dept', form_data['DepartmentCode'], form_data['SemesterCode']]
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html',form_data = form_data, out=out_format(sp.stdout))
 
 @app.route('/bulk_enroll/', methods=['POST'])
 def bulk_enroll():
     form_data = request.form
-    args = ['python', 'bulk_enroll_dept.py', form_data['Department'], form_data['Semester'], form_data['UserId']]
+    args = [call_py, 'bulk_enroll_dept.py', form_data['Department'], form_data['Semester'], form_data['UserId']]
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
 
 @app.route('/rubrics/', methods=['POST'])
 def rubrics():
     form_data = request.form
-    args = ['python', 'rubrics2.py', '--ou', form_data['OrgUnitId'], '--id',form_data['UserId']]
+    args = [call_py, 'rubrics2.py', '--ou', form_data['OrgUnitId'], '--id',form_data['UserId']]
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
 
 @app.route('/firstday/', methods=['POST'])
 def firstday():
     form_data = request.form
-    args = ['python', 'firstday.py', form_data['SemesterCode'], '--nocheck']
+    args = [call_py, 'firstday.py', form_data['SemesterCode'], '--nocheck']
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
 
