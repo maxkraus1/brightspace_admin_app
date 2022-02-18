@@ -7,14 +7,22 @@ import json
 import os
 import platform
 import subprocess
-
-from flask import Flask, render_template, request
+from werkzeug.utils import secure_filename
+from flask import Flask, flash, render_template, request
 from flask_restful import Resource, Api, reqparse
 
+UPLOAD_FOLDER = 'static\\uploads'
+ALLOWED_EXTENSIONS = {'txt', 'csv'}
+
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 api = Api(app)
 
 call_py = 'py' if platform.system() == 'Windows' else 'python3'  # find cmd for python3
+
+def allowed_file(filename):  # helper funtion for file uploads
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 class Credentials(Resource):
     def get(self):
@@ -35,7 +43,8 @@ def form():
                 'Grades Report Department',
                 'Bulk Enroll Department Staff',
                 'Rubrics Report',
-                'Push First Day Info'
+                'Push First Day Info',
+                'Download Evidence'
                 ]
     return render_template('form.html', processes=processes)
 
@@ -81,6 +90,21 @@ def rubrics():
 def firstday():
     form_data = request.form
     args = [call_py, 'firstday.py', form_data['SemesterCode'], '--nocheck']
+    sp = subprocess.run(args=args, capture_output=True)
+    return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
+
+@app.route('/evidence/', methods=['POST'])
+def evidence():
+    form_data = request.form
+    file = request.files['csvfile']
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    args = [call_py, 'evidence.py', form_data['keyphrase'], filepath]
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
 

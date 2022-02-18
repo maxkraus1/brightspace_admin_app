@@ -75,6 +75,19 @@
 </form>
 </div>
 
+<!-- Evidence Form -->
+<div id="DownloadEvidence" class="ProcessOptions">
+  <h2>Download student assignment submissions, rubric assessments and feedback</h2>
+  <small>Evidence will be downloaded to the parent directory path listed for each course in the CSV file</small>
+  <form action="/evidence" method="POST" enctype=multipart/form-data>
+    <p>Enter key phrase to search assignment titles for<br />
+      <input type="text" name="keyphrase" placeholder='Signature Assignment' required /></p>
+    <p>Choose a CSV file of courses to collect evidence from<br />
+      (hint: <a href="https://docs.google.com/spreadsheets/d/1JNTRoYd4JrO97sr4w0irMP7BJ8-4MxCwKnqj6P9FdFw/edit?usp=sharing" target="blank">use this template)</a></p>
+      <p><input type="file" id="csvfile" name="csvfile" required /></p>
+    <p><input type="submit" value="Submit" /></p>
+  </form>
+</div>
 <!-- end of form div -->
 </div>
 

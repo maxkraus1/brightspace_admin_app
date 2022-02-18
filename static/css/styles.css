@@ -1,11 +1,11 @@
 body {
   text-align: center;
-  font-family: Lato, sans-serif;
+  font-family: Helvetica, sans-serif;
 }
 
 input[type=text] {
   border: none;
-  border-bottom: 2px solid blue;
+  border-bottom: 2px solid #008E5B;
   padding: 10px 5px 5px 5px;
 }
 
@@ -15,7 +15,18 @@ input[type=text]:focus {
 
 input[type=submit] {
   padding:5px 15px;
-  background:#ccc;
+  background:#008E5B;
+  color: white;
+  font-weight: bold;
+  border:0 none;
+  cursor:pointer;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+
+input[type=file] {
+  padding:5px 15px;
+  background:#F0F0F0;
   border:0 none;
   cursor:pointer;
   -webkit-border-radius: 5px;
