@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 from flask import Flask, flash, render_template, request
 from flask_restful import Resource, Api, reqparse
 
-UPLOAD_FOLDER = 'static\\uploads'
+UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'txt', 'csv'}
 
 app = Flask(__name__)
@@ -54,42 +54,42 @@ def data():
         return f"The URL /data is accessed directly. Try going to '/' to submit form"
     if request.method == 'POST':
         form_data = request.form
-        args = [call_py,  'semester_report.py', form_data['SemesterCode']]
+        args = [call_py,  'scripts/semester_report.py', form_data['SemesterCode']]
         sp = subprocess.run(args=args, capture_output=True)
         return render_template('data.html',form_data=form_data, out=out_format(sp.stdout))
 
 @app.route('/grades_report/', methods=['POST'])
 def grades_report():
     form_data = request.form
-    args = [call_py, 'grades_report.py', '--org', form_data['OrgUnitId']]
+    args = [call_py, 'scripts/grades_report.py', '--org', form_data['OrgUnitId']]
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html',form_data = form_data, out=out_format(sp.stdout))
 
 @app.route('/grades_report_dept/', methods=['POST'])
 def grades_report_dept():
     form_data = request.form
-    args = [call_py, 'grades_report.py', '--dept', form_data['DepartmentCode'], form_data['SemesterCode']]
+    args = [call_py, 'scripts/grades_report.py', '--dept', form_data['DepartmentCode'], form_data['SemesterCode']]
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html',form_data = form_data, out=out_format(sp.stdout))
 
 @app.route('/bulk_enroll/', methods=['POST'])
 def bulk_enroll():
     form_data = request.form
-    args = [call_py, 'bulk_enroll_dept.py', form_data['Department'], form_data['Semester'], form_data['UserId']]
+    args = [call_py, 'scripts/bulk_enroll_dept.py', form_data['Department'], form_data['Semester'], form_data['UserId']]
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
 
 @app.route('/rubrics/', methods=['POST'])
 def rubrics():
     form_data = request.form
-    args = [call_py, 'rubrics2.py', '--ou', form_data['OrgUnitId'], '--id',form_data['UserId']]
+    args = [call_py, 'scripts/rubrics2.py', '--ou', form_data['OrgUnitId'], '--id',form_data['UserId']]
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
 
 @app.route('/firstday/', methods=['POST'])
 def firstday():
     form_data = request.form
-    args = [call_py, 'firstday.py', form_data['SemesterCode'], '--nocheck']
+    args = [call_py, 'scripts/firstday.py', form_data['SemesterCode'], '--nocheck']
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
 
@@ -104,7 +104,7 @@ def evidence():
         filename = secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    args = [call_py, 'evidence.py', form_data['keyphrase'], filepath]
+    args = [call_py, 'scripts/evidence.py', form_data['keyphrase'], filepath]
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
 
