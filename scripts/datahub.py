@@ -8,7 +8,7 @@ import re
 import pandas as pd
 
 # load directory paths from paths.json file
-with open(os.path.join(os.path.dirname(__file__), "paths.json")) as paths_json:
+with open(os.path.join(os.path.dirname(__file__), "records/paths.json")) as paths_json:
     paths = json.load(paths_json)
 DATA_PATH = paths['DataPath']
 REPORT_PATH = paths['ReportPath']

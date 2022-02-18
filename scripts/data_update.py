@@ -10,7 +10,7 @@ import pandas as pd
 from datahub import DATA_PATH
 import dwnld
 
-with open(os.path.join(os.path.dirname(__file__), "datasets.json")) as jsonfile:
+with open(os.path.join(os.path.dirname(__file__), "records/datasets.json")) as jsonfile:
     data_sets = json.load(jsonfile)
 
 def composite(df, pk):

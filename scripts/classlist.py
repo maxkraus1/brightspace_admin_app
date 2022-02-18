@@ -14,7 +14,6 @@ import pandas as pd
 import datahub
 import dwnld
 
-path = "G:/Shared drives/~ LMS Brightspace Implementation/Data Hub"
 role_details = datahub.ROLE_DETAILS
 
 # add arguments for differnt course selecting options

@@ -22,13 +22,13 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
-        logging.FileHandler(os.path.join(dir, "dwnld_debug.log")),
+        logging.FileHandler(os.path.join(dir, "records/dwnld_debug.log")),
         logging.StreamHandler(sys.stdout)
     ]
 )
 
 # Authorization: run auth.py
-token_data = json.load(open(os.path.join(dir, "credentials.json")))
+token_data = json.load(open(os.path.join(dir, "records/credentials.json")))
 HEADERS={'Authorization': 'Bearer {}'.format(token_data['access_token'])}
 
 # Other Global Variables below

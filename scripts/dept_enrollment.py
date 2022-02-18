@@ -17,7 +17,7 @@ semester = datahub.get_orgunit(dept_code)
 department = datahub.get_orgunit(sem_code)
 
 filename = sem_code + "_" + dept_code + ".csv"
-path = "G:/Shared drives/~ LMS Brightspace Implementation/Data Hub/Reports"
+path = datahub.REPORT_PATH
 report = os.path.join(path, filename)
 descendants = datahub.get_descendants(department, semester)
 dept_sheet = datahub.dept_sheet(descendants)
