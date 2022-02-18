@@ -44,7 +44,8 @@ def form():
                 'Bulk Enroll Department Staff',
                 'Rubrics Report',
                 'Push First Day Info',
-                'Download Evidence'
+                'Download Evidence',
+                'Download Syllabi'
                 ]
     return render_template('form.html', processes=processes)
 
@@ -105,6 +106,13 @@ def evidence():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     args = [call_py, 'scripts/evidence.py', form_data['keyphrase'], filepath]
+    sp = subprocess.run(args=args, capture_output=True)
+    return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
+
+@app.route('/syllabi/', methods=['POST'])
+def syllabi():
+    form_data = request.form
+    args = [call_py, 'scripts/syllabi.py', form_data['SemesterCode'], form_data['Path'], '--dept', form_data['DepartmentCode']]
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
 

@@ -83,11 +83,23 @@
     <p>Enter key phrase to search assignment titles for<br />
       <input type="text" name="keyphrase" placeholder='Signature Assignment' required /></p>
     <p>Choose a CSV file of courses to collect evidence from<br />
-      (hint: <a href="https://docs.google.com/spreadsheets/d/1JNTRoYd4JrO97sr4w0irMP7BJ8-4MxCwKnqj6P9FdFw/edit?usp=sharing" target="blank">use this template)</a></p>
+      <small>(hint: <a href="https://docs.google.com/spreadsheets/d/1JNTRoYd4JrO97sr4w0irMP7BJ8-4MxCwKnqj6P9FdFw/edit?usp=sharing" target="blank">use this template)</a></small></p>
       <p><input type="file" id="csvfile" name="csvfile" required /></p>
     <p><input type="submit" value="Submit" /></p>
   </form>
 </div>
+
+<!-- Syllabi Form -->
+<div id="DownloadSyllabi" class="ProcessOptions">
+<h2>Download syllabi files to the specified path</h2>
+<form action="/syllabi" method = "POST">
+    <p>Enter Semester Code<br /><input type="text" name="SemesterCode" placeholder='202210' required/></p>
+    <p>Enter Folder path<br /><input type="text" name="Path" placeholder='C:\Users\mkraus\Downloads\0TESTDIR' size="50" required/></p>
+    <p>Enter Department Code<br /><input type="text" name="DepartmentCode" placeholder='DIGM' required/></p>
+    <p><input type="submit" value="Submit" /></p>
+</form>
+</div>
+
 <!-- end of form div -->
 </div>
 
