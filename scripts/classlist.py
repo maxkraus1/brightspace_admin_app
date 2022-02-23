@@ -25,11 +25,11 @@ args = parser.parse_args()
 
 # set variables depending on args
 if args.sem and args.dept:
-    sem, dept = args.sem, args.dept
+    semester, department = args.sem, args.dept
     sem_ou = datahub.get_orgunit(semester)
     dept_ou = datahub.get_orgunit(department)
     courses = datahub.dept_sheet(datahub.get_descendants(dept_ou, sem_ou))[0]
-    filename = os.path.join(datahub.REPORT_PATH,"{}_{}_Rosters".format(sem,dept))
+    filename = os.path.join(datahub.REPORT_PATH,"{}_{}_Rosters".format(semester,department))
 elif args.csv:
     df = pd.read_csv(args.csv, dtype=str)
     courses = df.to_dict('records')
@@ -66,3 +66,4 @@ for row in courses:
     worksheet.set_column('E:E', 20)
 
 writer.save()
+print("Report saved at: ", filename)

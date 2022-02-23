@@ -45,9 +45,10 @@ def form():
                 'Rubrics Report',
                 'Push First Day Info',
                 'Download Evidence',
-                'Download Syllabi'
+                'Download Syllabi',
+                'Department Enrollment Report'
                 ]
-    return render_template('form.html', processes=processes)
+    return render_template('form.html', processes=sorted(processes))
 
 @app.route('/data/', methods = ['POST', 'GET'])
 def data():
@@ -113,6 +114,13 @@ def evidence():
 def syllabi():
     form_data = request.form
     args = [call_py, 'scripts/syllabi.py', form_data['SemesterCode'], form_data['Path'], '--dept', form_data['DepartmentCode']]
+    sp = subprocess.run(args=args, capture_output=True)
+    return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
+
+@app.route('/dept_enrollment/', methods=['POST'])
+def dept_enrollment():
+    form_data = request.form
+    args = [call_py, 'scripts/classlist.py', '--sem', form_data['SemesterCode'], '--dept', form_data['DepartmentCode']]
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
 
