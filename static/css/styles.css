@@ -27,7 +27,7 @@ input[type=submit] {
 input[type=file] {
   padding:5px 15px;
   background:#F0F0F0;
-  border:0 none;
+  border:2px solid #008E5B;
   cursor:pointer;
   -webkit-border-radius: 5px;
   border-radius: 5px;

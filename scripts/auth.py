@@ -4,7 +4,7 @@ import os
 import requests
 
 dir = os.path.dirname(__file__)
-creds_json = os.path.join(dir, "credentials.json")
+creds_json = os.path.join(dir, "records/credentials.json")
 
 with open(creds_json) as infile:
     creds = json.load(infile)

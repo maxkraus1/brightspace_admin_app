@@ -1,4 +1,4 @@
-"""Outputs report with grades values for each courses in a department
+"""Outputs report with grades values for each course
 
 default format is Excel with optional --pdf argument for pdf
 

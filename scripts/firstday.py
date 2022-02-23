@@ -15,7 +15,7 @@ import sys
 import datahub
 import dwnld
 
-sourceId = 10646
+sourceId = 10646  # OrgUnitId of the blank template course to copy from
 
 parser = argparse.ArgumentParser()
 parser.add_argument('semester', help="Otis semester code (i.e. '202210')")
