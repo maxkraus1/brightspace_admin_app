@@ -117,6 +117,6 @@ def syllabi():
     return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
 
 if __name__ == '__main__':
-    # import webbrowser
-    # webbrowser.open('http://localhost:5000')
+    import webbrowser
+    webbrowser.open('http://localhost:5000')
     app.run(port=5000)
