@@ -8,7 +8,7 @@ import argparse
 import datahub
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--list", nargs="+")
+parser.add_argument("list", nargs="+", help="enter 1 or more OrgDefinedIds separated by spaces")
 args = parser.parse_args()
 xlist = args.list
 idlist = []
