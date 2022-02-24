@@ -27,7 +27,7 @@ def allowed_file(filename):  # helper funtion for file uploads
 class Credentials(Resource):
     def get(self):
         """returns the json data in credentials.json"""
-        with open('credentials.json') as file:
+        with open('scripts/records/credentials.json') as file:
             data = json.load(file)
             return data, 200
 
