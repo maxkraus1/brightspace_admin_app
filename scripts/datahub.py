@@ -13,15 +13,15 @@ with open(os.path.join(os.path.dirname(__file__), "records/paths.json")) as path
 DATA_PATH = paths['DataPath']
 REPORT_PATH = paths['ReportPath']
 
-ASSIGNMENT_SUMMARY = DATA_PATH + "AssignmentSummary.csv"
-CONTENT_OBJECTS = DATA_PATH + "ContentObjects.csv"
-GRADE_OBJECTS = DATA_PATH + "GradeObjects.csv"
-DESCENDANTS = DATA_PATH + "OrganizationalUnitDescendants.csv"
-ORG_UNITS = DATA_PATH + "OrganizationalUnits.csv"
-ROLE_DETAILS = DATA_PATH + "RoleDetails.csv"
-RUBRIC_ASSESSMENT = DATA_PATH + "RubricAssessment.csv"
-USER_ENROLLMENTS = DATA_PATH + "UserEnrollments.csv"
-USERS = DATA_PATH + "Users.csv"
+ASSIGNMENT_SUMMARY = os.path.join(DATA_PATH, "AssignmentSummary.csv")
+CONTENT_OBJECTS = os.path.join(DATA_PATH, "ContentObjects.csv")
+GRADE_OBJECTS = os.path.join(DATA_PATH, "GradeObjects.csv")
+DESCENDANTS = os.path.join(DATA_PATH, "OrganizationalUnitDescendants.csv")
+ORG_UNITS = os.path.join(DATA_PATH, "OrganizationalUnits.csv")
+ROLE_DETAILS = os.path.join(DATA_PATH, "RoleDetails.csv")
+RUBRIC_ASSESSMENT = os.path.join(DATA_PATH, "RubricAssessment.csv")
+USER_ENROLLMENTS = os.path.join(DATA_PATH, "UserEnrollments.csv")
+USERS = os.path.join(DATA_PATH, "Users.csv")
 
 def get_descendants(dept, sem):
     """Takes a department and semester OrgUnitId and
