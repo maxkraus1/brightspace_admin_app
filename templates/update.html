@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Update - TLC Nest Admin</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+</head>
+<body>
+  <br />
+  <a href="/">Back to Home</a>
+  <!-- update selector -->
+  <div style="border: 3px solid #008E5B; margin: 20px 20% 0 20%;">
+  <h3>Choose what you would like to update:
+  <select id="selector">
+    <option value="default" selected>-- select an option --</option>
+    <option value="credentials">Update OAuth 2.0 Credentials</option>
+    <option value="paths">Update Data Paths</option>
+  </select>
+  </h3>
+  </div>
+  <div style="text-align: left; padding: 10px 20% 0 20%;">
+    <!-- path update form -->
+    <div id="paths" class="forms">
+    <h2>Update Data Path</h2>
+    <form action="/update" method="POST">
+    <select name="selected" required>
+      <option value="" selected>-- select an option --</option>
+      {% for key in paths.keys() %}
+        <option value="{{key}}">{{key}}</option>
+      {% endfor %}
+    </select>
+    <p>Enter new value<br /><input type="text" name="newvalue" placeholder='new path' required/></p>
+    <p><input type="submit" value="Submit" /></p>
+    </form>
+  <hr>
+  <h2>Current Paths</h2>
+  {% for key, value in paths.items() %}
+    <p><b>{{key}}:</b></p>
+    <p class="copy_text">{{value}}</p>
+  {% endfor %}
+  <hr>
+  </div>
+  <!-- credential update form -->
+  <div id="credentials" class="forms">
+  <h2>Update OAuth 2.0 Credential</h2>
+  <form action="/update" method="POST">
+  <select name="selected" required>
+    <option value="" selected>-- select an option --</option>
+    {% for key in credentials.keys() %}
+      <option value="{{key}}">{{key}}</option>
+    {% endfor %}
+  </select>
+  <p>Enter new value<br /><input type="text" name="newvalue" placeholder='new credential' required/></p>
+  <p><input type="submit" value="Submit" /></p>
+  </form>
+  <hr>
+  <h2>Current Credentials</h2>
+  {% for key, value in credentials.items() %}
+    <p><b>{{key}}:</b></p>
+    <p class="copy_text" style="word-wrap: break-word;">{{value}}</p>
+  {% endfor %}
+  <hr>
+  </div>
+  <!-- local path -->
+  <div class="forms" id="default">
+  <p><b>OR edit the text files directly: </b></p>
+  <small>Copy and paste the path below into a search on your computer to access the text (.json) files directly</small>
+  <p class="copy_text">{{records}}</p>
+  <hr>
+  </div>
+  </div>
+  <!-- JavaScript to show/hide forms -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script type="text/javascript">
+    $('.forms').hide();
+    $('#default').show();
+    $('#selector').on('change', function() {
+      $('.forms').hide();
+      let selected = $( "#selector option:selected").val();
+      let selected_id = '#' + selected;
+      $(selected_id).show();
+    });
+  </script>
+</body>

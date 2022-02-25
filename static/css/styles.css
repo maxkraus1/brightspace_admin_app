@@ -98,3 +98,9 @@ hr {
 
   font-size: 24;
 }
+
+.copy_text
+{
+  background-color: #F0F0F0;
+  padding: 5px 5px 5px 5px;
+}

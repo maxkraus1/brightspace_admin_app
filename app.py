@@ -8,7 +8,7 @@ import os
 import platform
 import subprocess
 from werkzeug.utils import secure_filename
-from flask import Flask, flash, render_template, request
+from flask import Flask, flash, render_template, request, redirect
 from flask_restful import Resource, Api, reqparse
 
 UPLOAD_FOLDER = 'static/uploads'
@@ -46,7 +46,8 @@ def form():
                 'Push First Day Info',
                 'Download Evidence',
                 'Download Syllabi',
-                'Department Enrollment Report'
+                'Department Enrollment Report',
+                'Update API credentials or paths'
                 ]
     return render_template('form.html', processes=sorted(processes))
 
@@ -123,6 +124,36 @@ def dept_enrollment():
     args = [call_py, 'scripts/classlist.py', '--sem', form_data['SemesterCode'], '--dept', form_data['DepartmentCode']]
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
+
+@app.route('/update/', methods=['POST', 'GET'])
+def update():
+    """Handles displaying and updating paths and credentials JSON files"""
+    # load json files
+    paths_file = 'scripts/records/paths.json'
+    creds_file = 'scripts/records/credentials.json'
+    with open(paths_file) as infile:
+        paths = json.load(infile)
+    with open(creds_file) as infile:
+        creds = json.load(infile)
+    records = os.path.abspath('scripts/records')
+    # display update template if GET request
+    if request.method == 'GET':
+        return render_template('update.html', paths=paths, credentials=creds, records=records)
+    # update data if POST request
+    elif request.method == 'POST':
+        form_data = request.form
+        key = form_data['selected']
+        # update paths.json file if selected
+        if key in paths.keys():
+            paths[key] = form_data['newvalue']
+            with open(paths_file, 'w') as outfile:
+                json.dump(paths, outfile, indent=4)
+        elif key in creds.keys():
+            creds[key] = form_data['newvalue']
+            with open(creds_file, 'w') as outfile:
+                json.dump(creds, outfile, indent=4)
+        return redirect('/update')
+
 
 if __name__ == '__main__':
     import webbrowser

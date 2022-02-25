@@ -124,9 +124,12 @@
   $('#selected_process').on('change', function() {
     $('.ProcessOptions').hide();
     let selected = $( "#selected_process option:selected" ).text();
-    let selected_id = '#' + selected.replace(/\s+/g, "")
-    console.log(selected_id)
-    $(selected_id).show();
+    let selected_id = '#' + selected.replace(/\s+/g, "");
+    if (selected_id == "#UpdateAPIcredentialsorpaths") {
+      window.location = '/update';
+    } else {
+      $(selected_id).show();
+    };
   });
   $('form').submit(function() {
     $(':submit').attr('disabled', true);
