@@ -114,7 +114,9 @@ def evidence():
 @app.route('/syllabi/', methods=['POST'])
 def syllabi():
     form_data = request.form
-    args = [call_py, 'scripts/syllabi.py', form_data['SemesterCode'], form_data['Path'], '--dept', form_data['DepartmentCode']]
+    args = [call_py, 'scripts/syllabi.py', form_data['SemesterCode'], form_data['Path']]
+    if form_data['DepartmentCode'] != 'EXT':
+        args += ['--dept', form_data['DepartmentCode']]
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
 

@@ -1,5 +1,9 @@
-Flask==2.0.2
-Flask_RESTful==0.3.9
-pandas==1.2.2
-reportlab==3.5.63
-requests==2.25.1
+Flask
+Flask_RESTful
+pandas
+reportlab
+requests
+openpyxl
+xlsxwriter
+requests
+reportlab
