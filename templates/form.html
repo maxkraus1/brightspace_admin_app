@@ -19,6 +19,7 @@
 <!-- Semester Report Form -->
 <div id="SemesterReport" class="ProcessOptions">
 <h2>Run a Semester Report</h2>
+<small style="background-color: #F0F0F0;">Report will be saved in the <b>ReportPath/Semester Course Reports</b> directory.</small>
 <form action="/data" method = "POST">
     <p>Semester Code:<br /><input type="text" name="SemesterCode" placeholder="202210" required /></p>
     <p><input type="submit" value="Submit" /></p>
@@ -28,6 +29,7 @@
 <!-- Grades Report Form -->
 <div id="GradesReport" class="ProcessOptions">
 <h2>Run a Grades Report for one course</h2>
+<small style="background-color: #F0F0F0;">Report will be saved in the <b>ReportPath</b> directory.</small>
 <form action="/grades_report" method = "POST">
     <p>Enter Course Org Unit Id:<br /><input type="text" name="OrgUnitId" placeholder="10476" required/></p>
     <p><input type="submit" value="Submit" /></p>
@@ -37,6 +39,7 @@
 <!-- Grades Report Department Form -->
 <div id="GradesReportDepartment" class="ProcessOptions">
 <h2>Run a Grades Report for all courses in a department</h2>
+<small style="background-color: #F0F0F0;">Report will be saved in the <b>ReportPath/Department Code</b> directory.</small>
 <form action="/grades_report_dept" method = "POST">
     <p>Enter Department Code<br /><input type="text" name="DepartmentCode" placeholder="FASD" required/></p>
     <p>Enter Semester Code<br /><input type="text" name="SemesterCode" placeholder="202130" required/></p>
@@ -47,7 +50,7 @@
 <!-- Bulk Enroll Department Staff Form -->
 <div id="BulkEnrollDepartmentStaff" class="ProcessOptions">
 <h2>Enroll a user as department staff for all courses in a department and semester</h2>
-<small>This process will exclude any courses the user is already enrolled in, as well as any empty shells without a faculty of record</small>
+<small>This process will exclude any courses the user is already enrolled in, as well as any empty shells without students enrolled</small>
 <form action="/bulk_enroll" method = "POST">
     <p>Enter Department Code: <br /><input type="text" name="Department" placeholder='FASD' required/></p>
     <p>Enter Semester Code:<br /><input type="text" name="Semester" placeholder='202210' required/></p>
@@ -59,6 +62,7 @@
 <!-- Rubrics Report Form -->
 <div id="RubricsReport" class="ProcessOptions">
 <h2>Run a report on all the rubrics for a student in a course</h2>
+<small style="background-color: #F0F0F0;">Report will be saved in the <b>ReportPath</b> directory.</small>
 <form action="/rubrics" method = "POST">
     <p>Enter Course Org Unit Id<br /><input type="text" name="OrgUnitId" placeholder='10476' required/></p>
     <p>Enter User Id:<br /> <input type="text" name="UserId" placeholder='X12345678' required/></p>
@@ -78,7 +82,7 @@
 <!-- Evidence Form -->
 <div id="DownloadEvidence" class="ProcessOptions">
   <h2>Download student assignment submissions, rubric assessments and feedback</h2>
-  <small>Evidence will be downloaded to the parent directory path listed for each course in the CSV file</small>
+  <small style="background-color: #F0F0F0;">Evidence will be downloaded to the parent directory path listed for each course in the CSV file</small>
   <form action="/evidence" method="POST" enctype=multipart/form-data>
     <p>Enter key phrase to search assignment titles for<br />
       <input type="text" name="keyphrase" placeholder='Signature Assignment' required /></p>
@@ -102,7 +106,8 @@
 
 <!-- Department enrollment report Form -->
 <div id="DepartmentEnrollmentReport" class="ProcessOptions">
-<h2>Produces Excel file with one sheet per course</h2>
+<h2>Produce an Excel file with one sheet per course</h2>
+<small style="background-color: #F0F0F0;">Report will be saved in the <b>ReportPath</b> directory.</small>
 <form action="/dept_enrollment" method = "POST">
     <p>Enter Semester Code<br /><input type="text" name="SemesterCode" placeholder='202210' required/></p>
     <p>Enter Department Code<br /><input type="text" name="DepartmentCode" placeholder='DIGM' required/></p>

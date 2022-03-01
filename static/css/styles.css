@@ -61,6 +61,14 @@ hr {
   border-top: 2px solid #D1D1D1;
 }
 
+a {
+  color: #000BFF;
+}
+
+a:visited {
+  color: #000BFF;
+}
+
 .form {
   margin-left: 35%;
   margin-right: 35%;
