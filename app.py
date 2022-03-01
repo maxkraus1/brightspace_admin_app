@@ -18,7 +18,7 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 api = Api(app)
 
-call_py = 'py' if platform.system() == 'Windows' else 'python3'  # find cmd for python3
+call_py = 'python' if platform.system() == 'Windows' else 'python3'  # find cmd for python3
 
 def allowed_file(filename):  # helper funtion for file uploads
     return '.' in filename and \
