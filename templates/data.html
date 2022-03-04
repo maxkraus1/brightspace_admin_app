@@ -1,4 +1,4 @@
-<! DOCTYPE HTML>
+<!DOCTYPE HTML>
 <html>
 <head>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
@@ -11,11 +11,13 @@
 <p><a href="/">Run another process</a></p>
 <p><a href="https://drive.google.com/drive/folders/10_Cuknzzs9YKmK5rJlHEBS3f0ba5k80Z?usp=sharing" target="_blank">View reports folder</a></p>
 </b>
+{% if form_data != None %}
 <hr class="data_hr"/>
 <p>Data Submitted:</p>
 {% for key,value in form_data.items() %}
 <p><b>{{key}}:</b> {{value}}</p>
 {% endfor %}
+{% endif %}
 <hr class="data_hr"/>
 <h2>Output</h2>
 <div class=output>

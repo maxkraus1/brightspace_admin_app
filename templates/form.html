@@ -73,6 +73,7 @@
 <!-- First Day Information Form -->
 <div id="PushFirstDayInfo" class="ProcessOptions">
 <h2>Push the default First Day Information and Syllabus units into every course in a semester</h2>
+<small>By default, courses that were already copied to but the instructor deleted the template unit are skipped.</small>
 <form action="/firstday" method = "POST">
     <p>Enter Semester Code<br /><input type="text" name="SemesterCode" placeholder='202210' required/></p>
     <p><input type="submit" value="Submit" /></p>
@@ -113,6 +114,15 @@
     <p>Enter Semester Code<br /><input type="text" name="SemesterCode" placeholder='202210' required/></p>
     <p>Enter Department Code<br /><input type="text" name="DepartmentCode" placeholder='DIGM' required/></p>
     <p><input type="submit" value="Submit" /></p>
+</form>
+</div>
+
+<!-- Update Data Sets Form -->
+<div id="UpdateDataSets" class="ProcessOptions">
+<h2>Update Data Sets from Data Hub</h2>
+<small>Brightspace Data Sets are updated every night around 12 AM. In case you don't have data_update.py running every night (using Task Scheduler on Windows or Automator on Mac), the script can be run here on demand to refresh the data sets, which are saved to the <a href="/update">DataPath</a>.</small>
+<form action="/update_data" method = "POST">
+    <p><input type="submit" value="Run Data Set Update Script" /></p>
 </form>
 </div>
 

@@ -47,7 +47,8 @@ def form():
                 'Download Evidence',
                 'Download Syllabi',
                 'Department Enrollment Report',
-                'Update API credentials or paths'
+                'Update API credentials or paths',
+                'Update Data Sets'
                 ]
     return render_template('form.html', processes=sorted(processes))
 
@@ -126,6 +127,12 @@ def dept_enrollment():
     args = [call_py, 'scripts/classlist.py', '--sem', form_data['SemesterCode'], '--dept', form_data['DepartmentCode']]
     sp = subprocess.run(args=args, capture_output=True)
     return render_template('data.html', form_data=form_data, out=out_format(sp.stdout))
+
+@app.route('/update_data/', methods=['POST'])
+def update_data():
+    args = [call_py, 'scripts/data_update.py']
+    sp = subprocess.run(args=args, capture_output=True)
+    return render_template('data.html', form_data=None, out=out_format(sp.stdout))
 
 @app.route('/update/', methods=['POST', 'GET'])
 def update():
