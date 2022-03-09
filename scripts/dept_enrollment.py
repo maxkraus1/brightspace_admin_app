@@ -39,7 +39,7 @@ for row in courses:
             new_row = {}
             new_row.update(row)
             new_row["UserId"] = e["Identifier"]
-            new_row["XNumber"] = e["Username"]
+            new_row["Username"] = e["Username"]
             new_row["FirstName"] = e["FirstName"]
             new_row["LastName"] = e["LastName"]
             new_row["Email"] = e["Email"]
@@ -48,7 +48,7 @@ for row in courses:
     except:
         continue
 
-headers = ["OrgUnitId", "CourseName", "CourseCode", "UserId", "XNumber",
+headers = ["OrgUnitId", "CourseName", "CourseCode", "UserId", "Username",
     "FirstName", "LastName", "Email", "Role"]
 with open(report, "w", newline="") as outfile:
     writer = csv.DictWriter(outfile, fieldnames=headers)

@@ -89,7 +89,7 @@ if __name__ == '__main__':
         course_org_units = valid_semester_orgunits(dept_code, sem_code)
         report_path = os.path.join(
                                     datahub.REPORT_PATH,
-                                    f'{dept_code} Nest Reports',
+                                    f'{dept_code} Brightspace Reports',
                                     f'{sem_code} Grades'
                                     )
         if not os.path.isdir(report_path):

@@ -10,9 +10,9 @@ import dwnld
 from datahub import REPORT_PATH
 
 parser = argparse.ArgumentParser()
-parser.add_argument("semester", help="Otis semester code i.e. '202130'")
+parser.add_argument("semester", help="School semester code i.e. '202130'")
 parser.add_argument("destination", help="path to folder for syllabi")
-parser.add_argument("--dept", help="Otis Department code to select only those courses", type=str)
+parser.add_argument("--dept", help="School Department code to select only those courses", type=str)
 parser.add_argument("--csv", help="csv file with OrgUnitId and Name for each course", type=str)
 args = parser.parse_args()
 

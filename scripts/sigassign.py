@@ -15,7 +15,7 @@ import sys
 
 import dwnld
 
-keyphrase = "Signature Assignment"
+keyphrase = "Signature Assignment"  # can replace with another term, like "Final Project"
 path = sys.argv[1]
 to_download = sys.argv[2]
 

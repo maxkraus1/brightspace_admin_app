@@ -22,7 +22,7 @@ semester_report = os.path.join( datahub.REPORT_PATH,
 
 df = pd.read_excel(semester_report)
 df = df[df['DeptCode'] == args.dept]
-df = df[df['InstructorXnumber'].str.contains(args.id) == False]
+df = df[df['OrgDefinedId'].str.contains(args.id) == False]
 df.dropna(subset=['StudentCount'], inplace=True)
 
 if args.role:

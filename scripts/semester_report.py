@@ -1,6 +1,6 @@
 """Creates an Excel report for the semester's course offering info
 
-Takes Otis semester code as command line argument 1
+Takes school semester code as command line argument 1
 """
 
 import os

@@ -7,10 +7,10 @@ import os
 
 import datahub
 
-semester = input("Enter Otis semester code: ")
-department = input("Enter Otis department code (for all departments enter 0): ")
+semester = input("Enter semester code: ")
+department = input("Enter department code (for all departments enter 0): ")
 role_input = input("Enter 1 for students or 2 for faculty: ")
-role = "110" if role_input == "1" else "109"
+role = "110" if role_input == "1" else "109"  # can replace with role ids specific to your school
 role_name = "Students" if role == "110" else "Faculty"
 
 sem = datahub.get_orgunit(semester)

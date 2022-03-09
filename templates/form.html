@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-  <title>Home - TLC Nest Admin</title>
+  <title>Home - Brightspace Admin App</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
 </head>
 <body>
@@ -54,7 +54,7 @@
 <form action="/bulk_enroll" method = "POST">
     <p>Enter Department Code: <br /><input type="text" name="Department" placeholder='FASD' required/></p>
     <p>Enter Semester Code:<br /><input type="text" name="Semester" placeholder='202210' required/></p>
-    <p>Enter User Id:<br /><input type="text" name="UserId" placeholder='X12345678' required/></p>
+    <p>Enter User Id:<br /><input type="text" name="UserId" placeholder='Org Defined Id' required/></p>
     <p><input type="submit" value="Submit" /></p>
 </form>
 </div>
@@ -65,7 +65,7 @@
 <small style="background-color: #F0F0F0;">Report will be saved in the <b>ReportPath</b> directory.</small>
 <form action="/rubrics" method = "POST">
     <p>Enter Course Org Unit Id<br /><input type="text" name="OrgUnitId" placeholder='10476' required/></p>
-    <p>Enter User Id:<br /> <input type="text" name="UserId" placeholder='X12345678' required/></p>
+    <p>Enter User Id:<br /> <input type="text" name="UserId" placeholder='Org Defined Id' required/></p>
     <p><input type="submit" value="Submit" /></p>
 </form>
 </div>
@@ -88,7 +88,7 @@
     <p>Enter key phrase to search assignment titles for<br />
       <input type="text" name="keyphrase" placeholder='Signature Assignment' required /></p>
     <p>Choose a CSV file of courses to collect evidence from<br />
-      <small>(hint: <a href="https://docs.google.com/spreadsheets/d/1JNTRoYd4JrO97sr4w0irMP7BJ8-4MxCwKnqj6P9FdFw/edit?usp=sharing" target="blank">use this template)</a></small></p>
+      <small>(CSV file must have "OrgUnitId", "Name", "Code", and "Path" columns. The "Path" value is the absolute path to the parent folder where the script will create a subfolder for the evidence downloaded.</small></p>
       <p><input type="file" id="csvfile" name="csvfile" required /></p>
     <p><input type="submit" value="Submit" /></p>
   </form>

@@ -15,7 +15,7 @@ import report
 def parse_args():
     """adds optional argument to run a bulk report"""
     parser = argparse.ArgumentParser()
-    parser.add_argument('--bulk', help='path to csv file with OrgUnitId and Xnumber columns')
+    parser.add_argument('--bulk', help='path to csv file with OrgUnitId and OrgDefinedId columns')
     parser.add_argument('--ou', help='course offering org unit id number', type=int)
     parser.add_argument('--id', help='user org defined id')
     return parser.parse_args()
@@ -56,16 +56,16 @@ def main():
         print(df2.head())
         df = df[df['OrgUnitId'].isin(df2['OrgUnitId'].unique())]
         for u in df2.itertuples():
-            build_report(u.OrgUnitId, u.Xnumber, df)
+            build_report(u.OrgUnitId, u.OrgDefinedId, df)
 
     elif not args.bulk:
         ou = args.ou if args.ou else input('Enter course OrgUnitId: ')
-        xid = args.id if args.id else input('Enter student X number: ')
+        xid = args.id if args.id else input('Enter student Org Defined Id: ')
         df = df[df['OrgUnitId'] == int(ou)]
         build_report(ou, xid, df)
 
     elif os.path.isfile(args.bulk) and args.bulk[-4] != '.csv':
-        print('Please enter a valid path to your csv file with OrgUnitId and Xnumber columns')
+        print('Please enter a valid path to your csv file with OrgUnitId and OrgDefinedId columns')
 
 if __name__ == '__main__':
     main()

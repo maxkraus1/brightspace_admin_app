@@ -1,4 +1,5 @@
 {
-  "DataPath": "G:/Shared drives/~ LMS Brightspace Team/Data Hub/Data Sets/",
-  "ReportPath": "G:/Shared drives/~ LMS Brightspace Team/Data Hub/Reports/"
+  "DataPath": "Path to data sets folder i.e. 'C:\\Users\\you\\data_sets'",
+  "ReportPath": "Path to reports folder i.e. 'C:\\Users\\you\\data_sets'",
+  "LMSDomain": "Brightspace domain i.e. 'https://lms.yourschool.edu'"
 }

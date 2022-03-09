@@ -1,4 +1,4 @@
-"""Runner script to collect evidence for the minors
+"""Runner script to collect Assignment submissions + assessments
 
 Takes a keyphrase as argument 1 and csv file as argument 2
 """

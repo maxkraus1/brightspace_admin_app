@@ -51,15 +51,11 @@ def get_code(orgUnitId):
                  return row["Code"]
 
 def get_user(id):
-    """Retrives info on a user from their X number"""
+    """Retrives info on a user from their Org Defined Id"""
     with open(USERS, newline="", encoding="utf-8-sig") as infile:
         reader = csv.DictReader(infile)
-        try:
-            field = "OrgDefinedId" if id[0] == "X" else "UserId"
-        except:
-            field = "UserId"
         for row in reader:
-            if row[field] == str(id):
+            if row["OrgDefinedId"] == str(id):
                 return row
 
 def get_enrollments(orgUnitId):
@@ -109,23 +105,21 @@ def dept_index():
     return df[["DeptCode"]].copy()
 
 def instructor_index():
-    """returns a dataframe of OrgUnitId|XNumber|Email"""
+    """returns a dataframe of OrgUnitId|UserName|Email"""
     users = pd.read_csv(USERS, dtype="string")
     df1 = pd.read_csv(USER_ENROLLMENTS, dtype="string")
-    df1 = df1[df1.RoleName == "Faculty / Instructor"]
+    df1 = df1[df1.RoleName == "Faculty / Instructor"]  # can replace with faculty role
     df1 = df1.filter(items=["OrgUnitId", "UserId"])
     df2 = df1.merge(users, how="left", on="UserId")
     df2 = df2.filter(items=['OrgUnitId', 'UserName', 'ExternalEmail'])
     df3 = df2.astype(str).groupby(["OrgUnitId"], as_index=False).agg(
                             {"UserName": "; ".join, "ExternalEmail": "; ".join})
-    return df3.rename(columns={
-                            "UserName": "InstructorXnumber",
-                            "ExternalEmail": "InstructorEmail"})
+    return df3.rename(columns={"ExternalEmail": "InstructorEmail"})
 
 def stud_enroll_index():
     """returns a series of OrgUnitId: StudentCount"""
     df = pd.read_csv(USER_ENROLLMENTS, dtype="string")
-    df = df[df.RoleName == "Student / Learner"]
+    df = df[df.RoleName == "Student / Learner"]  # can replace with student role
     counts = df.value_counts("OrgUnitId", sort=False)
     return counts.rename("StudentCount")
 
@@ -160,11 +154,11 @@ def get_grade_objects(orgUnitId):
         return [r for r in reader if r["OrgUnitId"] == orgUnitId]
 
 def cross_listed(orgUnitId):
-    """Takes the semester Org Unit Idand produces a csv report on all
+    """Takes the semester Org Unit Id and produces a csv report on all
     cross-listed courses in the semester
     """
     all_courses = get_semester_courses(orgUnitId)
-    pattern = r"\(([A-Z]{4}.+)\)"
+    pattern = r"\(([A-Z]{4}.+)\)"  # can replace with regex pattern that matches your school
     cross_listed = []
     for c in all_courses:
         result = re.search(pattern, c["Name"])
@@ -215,7 +209,7 @@ def signature_assignments(sem):
         sig_list = []
         for row in reader:
             if row['OrgUnitId'] in all_courses and \
-                'Signature Assignment' in row['Name']:
+                'Signature Assignment' in row['Name']:  # can replace with term specific to institution
                 sig_list.append(row)
         codes = get_code(libs, sem)
         report = '{}Signature Assignments_{}.csv'.format(DATA_PATH, codes[1])

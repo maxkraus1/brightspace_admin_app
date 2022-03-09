@@ -1,6 +1,6 @@
 """Returns a list of course offerings in which all users are enrolled
 
-takes multiple X numbers as arguments
+takes multiple Org Defined IDs as arguments
 """
 
 import argparse

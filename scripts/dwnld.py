@@ -31,8 +31,9 @@ logging.basicConfig(
 token_data = json.load(open(os.path.join(dir, "records/credentials.json")))
 HEADERS={'Authorization': 'Bearer {}'.format(token_data['access_token'])}
 
+paths_data = json.load(open(os.path.join(dir, "records/paths.json")))
 # Other Global Variables below
-DOMAIN = 'https://lms.otis.edu/d2l/api'
+DOMAIN =   + '/d2l/api'
 LP_VERSION = '1.30'
 LE_VERSION = '1.47'
 

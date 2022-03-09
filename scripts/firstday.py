@@ -32,7 +32,7 @@ def runner(idlist):
         data = dwnld.get_toc(id)
         first_day = []
         for module in data['Modules']:
-            if 'First Day Information' in module['Title']:
+            if 'First Day Information' in module['Title']:  # can change to check for other term
                 first_day.append(module)
         if not first_day:
             copylist.append(id)
