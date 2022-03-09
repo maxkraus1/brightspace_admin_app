@@ -34,8 +34,8 @@ content:file:read content:modules:read,write content:toc:read content:topics:rea
 ```
 ## Define Paths and API credentials
 * From the browser UI, select the “Update API credentials and paths” option
-* Select the “Update Data Paths” option. Set the DataPath to where you want data sets to be stored, and the ReportPath to where reports should be stored.
-* Select the "Update OAuth 2.0 Credentials" option. Copy your initial access token and refresh token from Postman (see <a href="https://community.brightspace.com/s/article/Learn-Postman-with-Paul">Learn Postman with Paul</a>) and set the values for each.
+* Select the “Update Data Paths” option. Set the DataPath to where you want data sets to be stored, the ReportPath to where reports should be stored, and the LMSDomain to your school's Brightspace instance domain.
+* Select the "Update OAuth 2.0 Credentials" option. Copy your client Id, client secret from Brightsapce and your initial access token and refresh token from Postman (see [Learn Postman with Paul](https://community.brightspace.com/s/article/Learn-Postman-with-Paul)) and set the values for each.
 
 ## Schedule Data Set Updates
 Using task scheduler on Windows or a cron job on Linux/MacOs, schedule the following script to execute daily for some time after your daily Brightspace data sets update:
@@ -54,6 +54,16 @@ python3 scripts/data_update.py
 * Download most recent full data set and perform an upsert of any recent differential data sets
 * Look up the courses that two or more users are enrolled in
 * Bulk update course offering info (name, start/end dates, etc.)
+
+## Project Structure
+* app.py is the main script to access most functionality via the browser-based UI
+  * scripts/auth.py handles authentication and refreshing the API tokens
+  * scripts/dwnld.py houses all of the HTTP request methods
+  * scripts/datahub.py houses all of the data set operation methods
+  * scripts/report.py houses the PDF report methods using the reportlab library
+  * all other .py files in the scripts/ directory run their own processes
+* The scripts/records directory holds the configuration files paths.json, credentials.json, and datasets.json, as well as the dwnld_debug.log file.
+* The templates/ directory holds the html templates and the static/ directory holds the static files used by app.py
 
 ## Command line usage
 While all processes can be run from the browser based UI, scripts can also be executed directly from the command line with more optional arguments.

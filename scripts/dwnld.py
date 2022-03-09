@@ -33,7 +33,7 @@ HEADERS={'Authorization': 'Bearer {}'.format(token_data['access_token'])}
 
 paths_data = json.load(open(os.path.join(dir, "records/paths.json")))
 # Other Global Variables below
-DOMAIN =   + '/d2l/api'
+DOMAIN = paths_data['LMSDomain'] + '/d2l/api'
 LP_VERSION = '1.30'
 LE_VERSION = '1.47'
 
