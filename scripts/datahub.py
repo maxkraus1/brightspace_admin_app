@@ -78,10 +78,10 @@ def get_orgunit(code):
         reader = csv.DictReader(infile)
         orgunit = None
         for row in reader:
-            if str(row["Code"]) == str(code) and row["Type"] != "Section":
+            if str(row["Code"]) == str(code) and row["Type"] != "Section":  # filter out Section org units
                 if orgunit == None:
                     orgunit = row["OrgUnitId"]
-                else:
+                else:  # handle multiple org unit matches to a code
                     print("Multiple Org Unit matches for {}".format(code))
                     orgunit = input("Please enter Org Unit Id number: ")
                     return orgunit
@@ -109,15 +109,15 @@ def dept_index():
     return df[["DeptCode"]].copy()
 
 def instructor_index():
-    """returns a dataframe of OrgUnitId|XNumber|Email"""
+    """returns a dataframe of OrgUnitId|XNumber|Email for faculty enrollments"""
     users = pd.read_csv(USERS, dtype="string")
     df1 = pd.read_csv(USER_ENROLLMENTS, dtype="string")
-    df1 = df1[df1.RoleName == "Faculty / Instructor"]
-    df1 = df1.filter(items=["OrgUnitId", "UserId"])
-    df2 = df1.merge(users, how="left", on="UserId")
-    df2 = df2.filter(items=['OrgUnitId', 'UserName', 'ExternalEmail'])
+    df1 = df1[df1.RoleName == "Faculty / Instructor"]  # filtering df for faculty enrollments only
+    df1 = df1.filter(items=["OrgUnitId", "UserId"])  # keep only OrgUnitId and UserId
+    df2 = df1.merge(users, how="left", on="UserId")  # left join user data to enrollments
+    df2 = df2.filter(items=['OrgUnitId', 'UserName', 'ExternalEmail'])  # keep only OrgUnitId, UserName, and ExternalEmail
     df3 = df2.astype(str).groupby(["OrgUnitId"], as_index=False).agg(
-                            {"UserName": "; ".join, "ExternalEmail": "; ".join})
+                            {"UserName": "; ".join, "ExternalEmail": "; ".join})  # group courses with multiple faculty to same OrgUnit
     return df3.rename(columns={
                             "UserName": "InstructorXnumber",
                             "ExternalEmail": "InstructorEmail"})
@@ -125,14 +125,14 @@ def instructor_index():
 def stud_enroll_index():
     """returns a series of OrgUnitId: StudentCount"""
     df = pd.read_csv(USER_ENROLLMENTS, dtype="string")
-    df = df[df.RoleName == "Student / Learner"]
-    counts = df.value_counts("OrgUnitId", sort=False)
+    df = df[df.RoleName == "Student / Learner"]  # filter for students only
+    counts = df.value_counts("OrgUnitId", sort=False)  # get count of students per org unit
     return counts.rename("StudentCount")
 
 def content_obj_counts():
     """returns a series of OrgUnitId: ContentObjCount"""
     df = pd.read_csv(CONTENT_OBJECTS, dtype="string")
-    counts = df.value_counts("OrgUnitId", sort=False)
+    counts = df.value_counts("OrgUnitId", sort=False)  # get count of content objects per org unit
     return counts.rename("ContentObjCount")
 
 def get_semester_courses(orgUnitId):

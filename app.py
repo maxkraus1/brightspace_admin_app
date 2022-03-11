@@ -24,7 +24,7 @@ def allowed_file(filename):  # helper funtion for file uploads
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-class Credentials(Resource):
+class Credentials(Resource):  # to return credentials to Postman for testing
     def get(self):
         """returns the json data in credentials.json"""
         with open('scripts/records/credentials.json') as file:
@@ -38,7 +38,7 @@ def out_format(std_out):  # helper function to format shell output
 
 @app.route('/')
 def form():
-    processes =['Semester Report',
+    processes =['Semester Report',  # each process has a function below
                 'Grades Report',
                 'Grades Report Department',
                 'Bulk Enroll Department Staff',

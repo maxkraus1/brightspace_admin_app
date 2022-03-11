@@ -4,13 +4,15 @@ This project is intended for administrators of a D2L Brightspace LMS instance an
 * downloading all final project submissions and assessments from a selection of courses (department/semester)
 * creating reports from system data
 * and more!
-<p>The processes can be run via the browser-based UI by running ```app.py```, or from the command line in the /scripts directory.</p>
+
+The processes can be run via the browser-based UI by running ```app.py```, or from the command line in the /scripts directory.
 
 *Note: terms or processes that are specific to the original developer's Brightspace instance may be embedded in the code. It is encouraged for Brightspace admins to adapt the code in this project to their own specific needs.*
 
 
 ## Installation
-Make sure Python 3.9.1 or later is installed on your system.<br>
+Make sure Python 3.9.1 or later is installed on your system.
+
 Download and extract the code to a directory on your computer, or use
 ```bash
 git clone https://github.com/maxkraus1/brightspace_admin_app.git
@@ -28,14 +30,14 @@ To launch the browser-based app:
 python3 app.py
 ```
 ## Brightspace API Setup
-Follow the directions in <a href="https://community.brightspace.com/s/article/Learn-Postman-with-Paul">Learn Postman with Paul</a> to set up your OAuth2.0 app in Brightspace and obtain your initial access token and refresh token. Set the scope of your app in Brightspace to:
+Follow the directions in [Learn Postman with Paul](https://community.brightspace.com/s/article/Learn-Postman-with-Paul) to set up your OAuth2.0 app in Brightspace and obtain your initial access token and refresh token. Set the scope of your app in Brightspace to:
 ```
 content:file:read content:modules:read,write content:toc:read content:topics:read,write core:*:* datahub:dataexports:download,read enrollment:orgunit:create import:job:create,fetch users:userdata:create
 ```
 ## Define Paths and API credentials
 * From the browser UI, select the “Update API credentials and paths” option
 * Select the “Update Data Paths” option. Set the DataPath to where you want data sets to be stored, and the ReportPath to where reports should be stored.
-* Select the "Update OAuth 2.0 Credentials" option. Copy your initial access token and refresh token from Postman (see <a href="https://community.brightspace.com/s/article/Learn-Postman-with-Paul">Learn Postman with Paul</a>) and set the values for each.
+* Select the "Update OAuth 2.0 Credentials" option. Copy your initial access token and refresh token from Postman (see [Learn Postman with Paul](https://community.brightspace.com/s/article/Learn-Postman-with-Paul)) and set the values for each.
 
 ## Schedule Data Set Updates
 Using task scheduler on Windows or a cron job on Linux/MacOs, schedule the following script to execute daily for some time after your daily Brightspace data sets update:
@@ -54,6 +56,16 @@ python3 scripts/data_update.py
 * Download most recent full data set and perform an upsert of any recent differential data sets
 * Look up the courses that two or more users are enrolled in
 * Bulk update course offering info (name, start/end dates, etc.)
+
+## Project Structure
+* app.py is the main script to access most functionality via the browser-based UI
+  * scripts/auth.py handles authentication and refreshing the API tokens
+  * scripts/dwnld.py houses all of the HTTP request methods
+  * scripts/datahub.py houses all of the data set operation methods
+  * scripts/report.py houses the PDF report methods using the reportlab library
+  * all other .py files in the scripts/ directory run their own processes
+* The scripts/records directory holds the configuration files paths.json, credentials.json, and datasets.json, as well as the dwnld_debug.log file.
+* The templates/ directory holds the html templates and the static/ directory holds the static files used by app.py
 
 ## Command line usage
 While all processes can be run from the browser based UI, scripts can also be executed directly from the command line with more optional arguments.

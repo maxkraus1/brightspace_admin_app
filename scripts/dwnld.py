@@ -13,8 +13,8 @@ import requests
 import sys
 import zipfile
 
-import auth
-import report
+import auth  # run auth.py to update OAuth2.0 access and refresh tokens
+import report  # import methods to build pdf reports
 
 dir = os.path.dirname(__file__)  # directory for scritps
 # Logging setup to print to terminal and dwnld_debug.log
@@ -27,7 +27,7 @@ logging.basicConfig(
     ]
 )
 
-# Authorization: run auth.py
+# get stored OAuth2.0 credentials and set HTTP request headers
 token_data = json.load(open(os.path.join(dir, "records/credentials.json")))
 HEADERS={'Authorization': 'Bearer {}'.format(token_data['access_token'])}
 
@@ -262,62 +262,64 @@ def enroll(orgUnitId, userId, roleId, isCascading=False):
 
 # complex functions below here
 def get_files(orgUnitId, keyphrase, path):
-    """Creates a Rubric Assessment file and downloads the submitted file."""
-    folderIds = get_db_folders(orgUnitId, keyphrase)
-    if folderIds == []:
+    """Creates a Rubric Assessment file, text and attached feedback files,
+    and downloads the submitted files.
+    """
+    folderIds = get_db_folders(orgUnitId, keyphrase)  # get all dropbox folders that match keyphrase
+    if folderIds == []:  # if nothing matches, print message
         return "No Dropbox folders match the keyphrase!"
     for folder in folderIds:
-        submission_data = get_submissions(orgUnitId, folder['folderId'])
-        grades_data = None
-        if folder["GradeItemId"]:
+        submission_data = get_submissions(orgUnitId, folder['folderId'])  # get all submissions
+        grades_data = None  # initialize grades_data variable
+        if folder["GradeItemId"]:  # if the folder is grades, get grades data
             grades_data = get_item_grades(orgUnitId, folder["GradeItemId"])
         for item in submission_data:
-            name = item["Entity"]["DisplayName"]
-            entityId = item["Entity"]["EntityId"]
-            entityType = item["Entity"]["EntityType"]
+            name = item["Entity"]["DisplayName"]  # get submitter name
+            entityId = item["Entity"]["EntityId"]  # get submitter id
+            entityType = item["Entity"]["EntityType"]  # get submitter type
 
-            flag = False
-            if grades_data:
-                for g in grades_data["Objects"]:
-                    if g["User"]["Identifier"]==str(item["Entity"]["EntityId"]):
+            flag = False  # initialize flag variable
+            if grades_data:  # check if submissions have grades
+                for g in grades_data["Objects"]:  # iterate throught grades data
+                    if g["User"]["Identifier"]==str(item["Entity"]["EntityId"]):  # select the one that matches the current user
                         if g["GradeValue"]:
-                            flag = True
+                            flag = True  # set flag to true if grade value exists
                             grade = g["GradeValue"]["DisplayedGrade"]
-                            name += f"__{grade}_"
+                            name += f"__{grade}_"  # add grade to downloaded submission filename
             elif flag == False:
                 name += "__[No Grade]_"
 
-            if item["Feedback"]:
-                file_list = item["Feedback"]["Files"]
+            if item["Feedback"]:  # check if instructor feedback exists
+                file_list = item["Feedback"]["Files"]  # get list of feedback files
                 for file in file_list:
                     print("found!!!!")
                     fileId = file["FileId"]
                     filename = file["FileName"]
                     afilename = "{}_AttachmentFeedback_{}".format(name,
-                                                                filename)
+                                                                filename)  #format feedback file name
                     attach_path = os.path.join(path, afilename)
                     get_attachment(orgUnitId, folder["folderId"], entityType,
-                                entityId, fileId, attach_path)
-                if item["Feedback"]["Feedback"]:
-                    feedback = item["Feedback"]["Feedback"]["Html"]
-                    fbfile = os.path.join(path, f"{name}_OverallFeedback.pdf")
-                    report.simple(fbfile, "Overall Feedback", feedback)
-                if item["Feedback"]["RubricAssessments"]:
+                                entityId, fileId, attach_path)  # download feedback attachment files
+                if item["Feedback"]["Feedback"]:  # check if text feedback exists
+                    feedback = item["Feedback"]["Feedback"]["Html"]  # get html text feedback
+                    fbfile = os.path.join(path, f"{name}_OverallFeedback.pdf")  # format text feedback filename
+                    report.simple(fbfile, "Overall Feedback", feedback)  # build pdf report of text feedback
+                if item["Feedback"]["RubricAssessments"]:  # check for rubric assessments
                     assessments = item["Feedback"]["RubricAssessments"]
                     rubrics = get_rubrics(
-                        orgUnitId, "Dropbox", folder["folderId"])
-                    rfile = os.path.join(path, f"{name}_RubricAssessments.pdf")
-                    report.rubric_assessments(rfile, assessments, rubrics)
-                    if os.path.isfile(rfile):
+                        orgUnitId, "Dropbox", folder["folderId"]) # get the rubric assessments
+                    rfile = os.path.join(path, f"{name}_RubricAssessments.pdf")  # format rubric assessments filename
+                    report.rubric_assessments(rfile, assessments, rubrics)  # build rubric report
+                    if os.path.isfile(rfile):  # handle errors with building rubric assessment file
                         logging.info(
                             f"SUCCESS {os.path.basename(rfile)} created")
                     else:
                         logging.error(
                             f"FAILED {os.path.basename(rfile)} NOT created")
 
-            for submission in item["Submissions"]:
+            for submission in item["Submissions"]:  # get all submissions for user
                 submissionId = submission["Id"]
-                for file in submission["Files"]:
+                for file in submission["Files"]:  # download all submission files
                     filename = file["FileName"]
                     fileId = file["FileId"]
                     filepath = os.path.join(path, f"{name}_{filename}")

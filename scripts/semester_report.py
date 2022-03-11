@@ -17,6 +17,7 @@ name = os.path.join(report_path, filename)
 writer = pd.ExcelWriter(name)
 
 def format_sheet(df, sheet_name):
+    """helper function to format Excel sheets"""
     df.to_excel(writer, sheet_name=sheet_name, index=False)
     worksheet = writer.sheets[sheet_name]
     worksheet.set_column('B:B', 70)
@@ -24,16 +25,17 @@ def format_sheet(df, sheet_name):
     worksheet.set_column('E:H', 18)
 
 def main():
+    """main function to build semester report"""
     courses = pd.DataFrame(datahub.get_semester_courses(sem))
     courses = courses.filter(items=["OrgUnitId", "Name", "Code"])
-    dept_index = datahub.dept_index()
-    instructors = datahub.instructor_index()
+    dept_index = datahub.dept_index() # get index department codes per org unit
+    instructors = datahub.instructor_index()  # get index of instructors per org unit
     counts = datahub.stud_enroll_index()
     contentobjs = datahub.content_obj_counts()
     df = courses.join(dept_index, on="OrgUnitId")
-    df = df.merge(instructors, how="left", on="OrgUnitId")
-    df = df.merge(counts, how="left", on="OrgUnitId")
-    df = df.merge(contentobjs, how="left", on="OrgUnitId")
+    df = df.merge(instructors, how="left", on="OrgUnitId")  # left join courses to instructor info
+    df = df.merge(counts, how="left", on="OrgUnitId")  # left join student counts
+    df = df.merge(contentobjs, how="left", on="OrgUnitId")  # left join content object counts
     df.sort_values(['DeptCode', 'Name'], inplace=True)  # Sort by Course Name
     format_sheet(df, "SemesterReport")
     if sem_code[-1] == '0':

@@ -5,7 +5,7 @@ from datetime import datetime
 from operator import itemgetter
 import os
 
-import datahub
+import datahub  # import Brightspace data set methods
 
 semester = input("Enter Otis semester code: ")
 department = input("Enter Otis department code (for all departments enter 0): ")
@@ -13,7 +13,7 @@ role_input = input("Enter 1 for students or 2 for faculty: ")
 role = "110" if role_input == "1" else "109"
 role_name = "Students" if role == "110" else "Faculty"
 
-sem = datahub.get_orgunit(semester)
+sem = datahub.get_orgunit(semester)  # get semester OrgUnitId from semester code
 dept = 6606 if department == '0' else datahub.get_orgunit(department)
 descendants = datahub.get_descendants(sem, dept)
 
