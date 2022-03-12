@@ -37,7 +37,7 @@ content:file:read content:modules:read,write content:toc:read content:topics:rea
 ## Define Paths and API credentials
 * From the browser UI, select the “Update API credentials and paths” option
 * Select the “Update Data Paths” option. Set the DataPath to where you want data sets to be stored, and the ReportPath to where reports should be stored.
-* Select the "Update OAuth 2.0 Credentials" option. Copy your initial access token and refresh token from Postman (see [Learn Postman with Paul](https://community.brightspace.com/s/article/Learn-Postman-with-Paul)) and set the values for each.
+* Select the "Update OAuth 2.0 Credentials" option. Copy your initial access token and refresh token from Postman (see [Learn Postman with Paul](https://community.brightspace.com/s/article/Learn-Postman-with-Paul)), your client id and client secret from Brightspace, and set the values for each.
 
 ## Schedule Data Set Updates
 Using task scheduler on Windows or a cron job on Linux/MacOs, schedule the following script to execute daily for some time after your daily Brightspace data sets update:
